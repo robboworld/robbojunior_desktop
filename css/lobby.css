@@ -241,6 +241,15 @@ ul#settings.reference {
     width: 100%;
 }
 
+#version{
+  
+float:right;
+margin-right:50px;
+
+
+
+}
+
 .topsection.help > div.tabtitle {
     height: ${css_vh(5.86)};
     background: #35A8E0;

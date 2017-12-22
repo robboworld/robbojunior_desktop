@@ -23,7 +23,22 @@
   left: ${css_vh(21)};
   width: ${css_vh(6.33)};
   height: ${css_vh(6.33)};
-  background:url('../assets/ui/robot_search.svg');
+  background:url('../assets/ui/robot_search_on.svg');
+  background-size: 100%;
+
+
+}
+
+.robot_search:active{
+
+  position: absolute;
+  margin: 0px;
+  padding: 0px;
+  top: ${css_vh(2)};
+  left: ${css_vh(21)};
+  width: ${css_vh(6.33)};
+  height: ${css_vh(6.33)};
+  background:url('../assets/ui/robot_search_off.svg');
   background-size: 100%;
 
 
