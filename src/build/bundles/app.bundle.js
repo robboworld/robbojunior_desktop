@@ -22753,7 +22753,7 @@
 	            var distance = Math.abs(num);
 	            s.need_flip = s.need_flip_source;
 	
-	            if (s.need_flip) {
+	            if (s.need_flip == "true") {
 	                s.flip = true;
 	                s.render();
 	                //s.flip =   !s.flip;
@@ -22798,7 +22798,7 @@
 	            var num = Number(strip.thisblock.getArgValue()) * 24;
 	            var distance = Math.abs(num);
 	
-	            if (s.need_flip) {
+	            if (s.need_flip == "true") {
 	                s.flip = false;
 	                s.render();
 	                //  s.flip =   !s.flip;

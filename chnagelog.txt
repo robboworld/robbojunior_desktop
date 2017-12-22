@@ -1,0 +1,12 @@
+Changelog. [RobboJunior Desktop]
+
+Version 0.0.2 (On state: 22/11/2017)
+
+Bug fixed:
+
+1. Error with sprites moving.
+
+Gui modifications:
+
+1. Green icons (upload project, download project) added.
+2. Version label added on "lobby" screen.
