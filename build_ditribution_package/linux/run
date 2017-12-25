@@ -1,0 +1,18 @@
+#!/bin/sh
+
+cp junior-config robbojunior/DEBIAN/control
+
+cp junior-config-x32 robbojunior-x32/DEBIAN/control
+
+
+mask='s/v.v.v/'$1'/g';
+sed -i -e $mask robbojunior/DEBIAN/control
+sed -i -e $mask robbojunior-x32/DEBIAN/control
+
+
+fakeroot dpkg-deb --build robbojunior
+mv ./robbojunior.deb ./out/robbojunior$1.deb
+
+fakeroot dpkg-deb --build robbojunior-x32
+mv ./robbojunior-x32.deb ./out/robbojunior$1-x32.deb
+
