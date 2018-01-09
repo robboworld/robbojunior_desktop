@@ -1,8 +1,0 @@
-[Desktop Entry]
-Name=Robbo Junior
-Icon=junior
-Exec=/opt/junior/create_shortcut.sh
-Terminal=false
-Type=Application
-StartupNotify=false
-Name[ru]=junior-shortcut-added.desktop

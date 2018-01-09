@@ -1,9 +1,0 @@
-[Desktop Entry]
-Name=Robbo Junior
-Icon=junior
-Exec=robbojunior
-Terminal=false
-Type=Application
-StartupNotify=true
-Categories=Education,Development/Tools/IDE,Development/Other,Development/Languages
-Name[ru]=junior

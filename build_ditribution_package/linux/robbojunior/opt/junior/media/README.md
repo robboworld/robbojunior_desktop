@@ -1,1 +1,0 @@
-# scratch-media-lib-assets

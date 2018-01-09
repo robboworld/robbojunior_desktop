@@ -1,9 +1,0 @@
-#!/bin/sh
-
-awk -F: '{if ($3>=1000 && $3<2000) {system("usermod -a -G dialout " $1)}}' /etc/passwd
-#apt-get install gksu
-#apt-get install wmctrl
-#apt-get install avrdude
-#apt-get install menu
-#apt-get install zenit
-
