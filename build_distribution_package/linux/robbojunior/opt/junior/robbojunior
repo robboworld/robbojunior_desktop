@@ -1,0 +1,40 @@
+#!/bin/bash
+
+if id -nG "$USER" | grep -qw "dialout"; then
+  echo
+else
+    if zenity --question --text "User '$USER' should be add to the group 'dialout' to use hardware ports.\n\n Add it now?"; 
+    then
+       OUTPUT=$(zenity --forms --title="login:" --text="user" --add-entry="Login" --separator="," --add-password="Password")
+       accepted=$?
+       if ((accepted != 0)); then
+          echo "something went wrong"
+          exit 1
+       fi
+
+       admin_login=$(awk -F, '{print $1}' <<<$OUTPUT)
+       admin_password=$(awk -F, '{print $2}' <<<$OUTPUT)
+
+       su -c "sudo 'usermod -a -G dialout $USER'" $admin_login <<<$admin_password
+       zenity --warning --text "You have to logout/login before the changes take effect!"
+    fi
+fi
+
+
+cd /opt/junior
+
+
+clear
+
+CLASSPATH=""
+
+ITEMS=`find -name *.jar`
+for ITEM in $ITEMS; do
+   CLASSPATH=$CLASSPATH:$ITEM
+done
+
+echo $CLASSPATH
+
+#wmctrl -a "Flash"
+
+/opt/junior/java/bin/java -classpath $CLASSPATH -Xmx256m scratchduino.robot.Main

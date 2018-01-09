@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration debug="null" threshold="null" xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+
+
+   <appender class="org.apache.log4j.ConsoleAppender" name="CONSOLE">
+      <layout class="org.apache.log4j.PatternLayout">
+         <param name="ConversionPattern" value="%d [%t] %m%n[%-5p %C %M.%L %x]%n%n"/>
+      </layout>
+   </appender>
+
+
+
+   <appender class="org.apache.log4j.FileAppender" name="SYSTEM">
+      <param name="File"        value="/opt/robboscratch2/scratch2.log"/>
+      <param name="Append"      value="false"/>
+      <layout class="org.apache.log4j.PatternLayout">
+         <param name="ConversionPattern" value="%d [%t] [%c] %m%n[%-5p %C %M.%L %x]%n%n"/>
+      </layout>
+   </appender>
+
+
+
+
+   <logger name="TEST" additivity="false">
+      <appender-ref ref="CONSOLE" />
+      <appender-ref ref="SYSTEM" />
+   </logger>
+
+
+
+   <category name="com.mchange">
+      <priority value="WARN"/>
+   </category>
+
+   <category name="org.springframework">
+      <priority value="WARN"/>
+   </category>
+
+
+   <root>
+      <priority value="ERROR"/>
+<!--
+      <appender-ref ref="SYSTEM" />
+-->
+      <appender-ref ref="CONSOLE" />
+   </root>
+
+
+
+
+</log4j:configuration>
+
+
+
+
+
+
+
