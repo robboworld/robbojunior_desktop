@@ -1,11 +1,11 @@
 {
   "name": "RobboJunior",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "RobboJunior desktop application",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build": "webpack"    
+    "build": "webpack"
   },
   "devDependencies": {
     "electron": "~1.6.2",
@@ -24,6 +24,7 @@
     "webpack": "^1.12.11"
   },
   "dependencies": {
+    "fs-extra": "^5.0.0",
     "intl": "^1.0.1",
     "intl-messageformat": "^1.2.0",
     "jszip": "^2.5.0",
