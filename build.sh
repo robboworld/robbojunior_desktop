@@ -27,6 +27,14 @@ set -- "${POSITIONAL[@]}" # restore positional parameters
 
 #echo $start_junior
 
+
+ if hash node 2>/dev/null; then
+        echo "Nodejs is installed"
+    else
+        echo "Nodejs  is not installed"
+    fi
+
+
 echo 'npm run build'
 
 npm run build
