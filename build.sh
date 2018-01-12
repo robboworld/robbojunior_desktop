@@ -29,11 +29,23 @@ set -- "${POSITIONAL[@]}" # restore positional parameters
 
 
  if hash node 2>/dev/null; then
-        echo "Nodejs is installed"
+        echo "Nodejs is installed. "
     else
         echo "Nodejs  is not installed"
+        echo "Trying to install it automatically"
+        echo "curl -sL https://deb.nodesource.com/setup_9.x | sudo -E bash -"
+        echo "sudo apt-get install -y nodejs" 
+
+        curl -sL https://deb.nodesource.com/setup_9.x | sudo -E bash -
+        sudo apt-get install -y nodejs
     fi
 
+if [ ! -d "./node_modules" ]; then
+ 
+    echo "First start. Installing depedencies..."
+    npm install
+
+fi
 
 echo 'npm run build'
 
