@@ -55,7 +55,7 @@ export default class Sprite {
         this.borderOn = false;
         this.outline = document.createElement('canvas');
         this.code = new Scripts(this);
-        this.need_flip = MediaLib.keys[md5].need_flip;
+        this.need_flip =  (MediaLib.keys[md5] !== undefined) ? MediaLib.keys[md5].need_flip:false;
         this.need_flip_source = this.need_flip;
         setProps(this, attr);
         if (Localization.isSampleLocalizedKey(this.name) && ScratchJr.isSampleOrStarter()) {

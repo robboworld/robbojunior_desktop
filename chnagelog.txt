@@ -19,3 +19,9 @@ Bug fixed:
 1. Sound recording problem (record infinity duration bug)
 
 
+
+Version 0.0.4 (On state: 12/01/2017)
+
+Bug fixed:
+
+1. New sprites creating error
