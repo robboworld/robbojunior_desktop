@@ -25,3 +25,13 @@ Version 0.0.4 (On state: 12/01/2017)
 Bug fixed:
 
 1. New sprites creating error
+
+Version 0.0.5 (On state: 15/01/2017)
+
+Bug fixed:
+
+1.  Multiple windows bug during 'open dialog'
+
+Internal logic modifications:
+
+1. Setting up main window to maximaze at start
