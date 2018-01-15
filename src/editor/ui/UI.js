@@ -244,13 +244,17 @@ if (isAndroid){
 
             var oInputFile;
 
+
+
             if (isAndroid){
 
-
+              //    gn('project_load').ontouchstart = function(){};
                   AndroidInterface.SjrFileChoose();
 
 
             }else{
+
+              gn('project_load').onmousedown = function(){};
 
              if (oInputFile == undefined){
             oInputFile = document.createElement("input");
@@ -267,6 +271,7 @@ if (isAndroid){
               setTimeout(function(){
                 oInputFile.click();
                 oInputFile.focus();
+                gn('project_load').onmousedown = UI.SjrFileChoose;
               }, 1000);
 
 
