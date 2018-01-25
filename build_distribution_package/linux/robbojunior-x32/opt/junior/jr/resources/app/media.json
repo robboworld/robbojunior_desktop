@@ -51,7 +51,17 @@
 
 {"md5":"theatre.svg","width":480,"height":360,"ext":"svg","name":"theatre"},
 
-{"md5":"autumn.svg","width":480,"height":360,"ext":"svg","name":"autumn"}
+{"md5":"autumn.svg","width":480,"height":360,"ext":"svg","name":"autumn"},
+
+{"md5":"City.svg","width":480,"height":360,"ext":"svg","name":"City"},
+
+{"md5":"Creek.svg","width":480,"height":360,"ext":"svg","name":"Greek"},
+
+{"md5":"Fall.svg","width":480,"height":360,"ext":"svg","name":"Fall"},
+
+{"md5":"Lake2.svg","width":480,"height":360,"ext":"svg","name":"Lake"},
+
+{"md5":"Park.svg","width":480,"height":360,"ext":"svg","name":"Park"}
 
     ],
     "sprites": [
@@ -88,6 +98,8 @@
 
 
 {"md5":"cloud.svg","width":240,"height":159,"ext":"svg","name":"cloud","need_flip":"false","order":"characters,02 space","tags":["characters","02 space"]},
+
+{"md5":"Cloud1.svg","width":238,"height":149,"ext":"svg","name":"Cloud1","order":"characters,02 space","tags":["characters","02 space"]},
 
 {"md5":"planet2.svg","width":118,"height":114,"ext":"svg","name":"planet2","need_flip":"false","order":"characters,02 space","tags":["characters","02 space"]},
 
@@ -131,6 +143,16 @@
 
 {"md5":"tractor.svg","width":302,"height":258,"ext":"svg","name":"tractor","order":"characters,05 transport","tags":["characters","05 transport"]},
 
+{"md5":"Bus.svg","width":600,"height":319,"ext":"svg","name":"Bus","order":"characters,05 transport","tags":["characters","05 transport"]},
+
+{"md5":"Car4.svg","width":534,"height":220,"ext":"svg","name":"Car4","order":"characters,05 transport","tags":["characters","05 transport"]},
+
+{"md5":"Car5.svg","width":638,"height":415,"ext":"svg","name":"Car5","order":"characters,05 transport","tags":["characters","05 transport"]},
+
+{"md5":"Car6.svg","width":640,"height":415,"ext":"svg","name":"Car6","order":"characters,05 transport","tags":["characters","05 transport"]},
+
+{"md5":"Aeroplane.svg","width":570,"height":394,"ext":"svg","name":"Aeroplane","order":"characters,05 transport","tags":["characters","05 transport"]},
+
 
 
 {"md5":"apple.svg","width":202,"height":219,"ext":"svg","name":"apple","order":"characters,06 food","tags":["characters","06 food"]},
@@ -160,6 +182,8 @@
 
 {"md5":"flower4.svg","width":56,"height":119,"ext":"svg","name":"flower4","order":"characters,07 plants","tags":["characters","07 plants"]},
 
+{"md5":"Flowers.svg","width":197,"height":119,"ext":"svg","name":"Flowers","order":"characters,07 plants","tags":["characters","07 plants"]},
+
 {"md5":"gass1.svg","width":140,"height":99,"ext":"svg","name":"gass1","order":"characters,07 plants","tags":["characters","07 plants"]},
 
 {"md5":"gass3.svg","width":119,"height":63,"ext":"svg","name":"gass3","order":"characters,07 plants","tags":["characters","07 plants"]},
@@ -172,11 +196,19 @@
 
 {"md5":"tree.svg","width":246,"height":374,"ext":"svg","name":"tree","order":"characters,07 plants","tags":["characters","07 plants"]},
 
+{"md5":"Daisy1.svg","width":95,"height":78,"ext":"svg","name":"Daisy1","order":"characters,07 plants","tags":["characters","07 plants"]},
+
+{"md5":"Daisy2.svg","width":91,"height":81,"ext":"svg","name":"Daisy2","order":"characters,07 plants","tags":["characters","07 plants"]},
+
+{"md5":"Daisy3.svg","width":77,"height":98,"ext":"svg","name":"Daisy3","order":"characters,07 plants","tags":["characters","07 plants"]},
+
 
 
 {"md5":"ant.svg","width":296,"height":286,"ext":"svg","name":"ant","need_flip":"true","order":"characters,08 insects","tags":["characters","08 insects"]},
 
 {"md5":"baterfly.svg","width":316,"height":284,"ext":"svg","name":"baterfly","need_flip":"true","order":"characters,08 insects","tags":["characters","08 insects"]},
+
+{"md5":"Butterfly2.svg","width":128,"height":97,"ext":"svg","name":"Butterfly2","order":"characters,08 insects","tags":["characters","08 insects"]},
 
 {"md5":"bee.svg","width":229,"height":249,"ext":"svg","name":"bee","order":"characters,08 insects","tags":["characters","08 insects"]},
 
@@ -208,6 +240,8 @@
 
 {"md5":"horse.svg","width":337,"height":337,"ext":"svg","name":"horse","need_flip":"true","order":"characters,09 farm","tags":["characters","09 farm"]},
 
+{"md5":"Horse2.svg","width":422,"height":417,"ext":"svg","name":"Horse2","order":"characters,09 farm","tags":["characters","09 farm"]},
+
 {"md5":"pig.svg","width":287,"height":251,"ext":"svg","name":"pig","need_flip":"true","order":"characters,09 farm","tags":["characters","09 farm"]},
 
 {"md5":"littlepig.svg","width":125,"height":106,"ext":"svg","name":"littlepig","need_flip":"true","order":"characters,09 farm","tags":["characters","09 farm"]},
@@ -227,6 +261,12 @@
 {"md5":"child11.svg","width":190,"height":310,"ext":"svg","name":"child11","order":"characters,10 people","tags":["characters","10 people"]},
 
 {"md5":"child12.svg","width":186,"height":329,"ext":"svg","name":"child12","order":"characters,10 people","tags":["characters","10 people"]},
+
+{"md5":"Girl.svg","width":156,"height":309,"ext":"svg","name":"Girl","order":"characters,10 people","tags":["characters","10 people"]},
+
+{"md5":"Boy.svg","width":134,"height":319,"ext":"svg","name":"Boy","order":"characters,10 people","tags":["characters","10 people"]},
+
+{"md5":"Wizard.svg","width":411,"height":443,"ext":"svg","name":"Wizard","order":"characters,10 people","tags":["characters","10 people"]},
 
 
 
@@ -250,6 +290,8 @@
 
 {"md5":"zebra.svg","width":126,"height":108,"ext":"svg","name":"zebra","order":"characters,11 wild","tags":["characters","11 wild"]},
 
+{"md5":"Frog2.svg","width":195,"height":166,"ext":"svg","name":"Frog","order":"characters,11 wild","tags":["characters","11 wild"]},
+
 
 
 {"md5":"dinosaur1.svg","width":267,"height":322,"ext":"svg","name":"dinosaur1","order":"characters,12 dinosaurs","tags":["characters","12 dinosaurs"]},
@@ -259,6 +301,9 @@
 {"md5":"dinosaur3.svg","width":144,"height":104,"ext":"svg","name":"dinosaur3","order":"characters,12 dinosaurs","tags":["characters","12 dinosaurs"]},
 
 {"md5":"dinosaur4.svg","width":141,"height":121,"ext":"svg","name":"dinosaur4","need_flip":"true","order":"characters,12 dinosaurs","tags":["characters","12 dinosaurs"]},
+
+
+{"md5":"Dragon.svg","width":577,"height":532,"ext":"svg","name":"Dragon","order":"characters,13 dragons","tags":["characters","13 dragons"]},
 
 
 {"md5":"ABC hand drawn 1.svg","width":100,"height":200,"ext":"svg","name":"ABC hand drawn 1","order":"characters,14 ABC_hand_drawn","tags":["characters","14 ABC_hand_drawn"]},
