@@ -10,3 +10,12 @@ Gui modifications:
 
 1. Green icons (upload project, download project) added.
 2. Version label added on "lobby" screen.
+
+
+Version 0.0.3 (On state: 11/01/2017)
+
+Bug fixed:
+
+1. Sound recording problem (record infinity duration bug)
+
+
