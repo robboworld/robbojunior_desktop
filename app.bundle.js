@@ -6594,6 +6594,8 @@
 	
 	               var infinity_case = function infinity_case(audio, fcn) {
 	
+	                  console.log("Record duration infinity case!!!");
+	
 	                  // set it to bigger than the actual duration
 	                  audio.currentTime = 1e101;
 	                  audio.ontimeupdate = function () {
@@ -6623,7 +6625,7 @@
 	                  };
 	               };
 	
-	               var player = function player(url) {
+	               var player = function player(url, duration) {
 	                  var audio = new Audio(url);
 	                  audio.addEventListener('loadedmetadata', function () {
 	
@@ -6631,15 +6633,25 @@
 	
 	                        //  setTimeout(infinity_case(audio,fcn),2000);
 	
-	                        infinity_case(audio, fcn);
+	                        //infinity_case(audio,fcn)
+	
+	                        console.log("Playing " + audio.src + ", for: " + duration + " milliseconds.");
+	
+	                        if (fcn) {
+	
+	                           var dur = duration + 500;
+	                           setTimeout(fcn, dur);
+	                        }
+	
+	                        audio.play();
 	                     } else {
 	
 	                        console.log("Playing " + audio.src + ", for: " + audio.duration + " seconds.");
 	
 	                        if (fcn) {
 	
-	                           var dur = Math.round(audio.duration * 1000) + 500;
-	                           setTimeout(fcn, dur);
+	                           var _dur = Math.round(audio.duration * 1000) + 500;
+	                           setTimeout(fcn, _dur);
 	                        }
 	
 	                        audio.play();
@@ -6647,9 +6659,22 @@
 	                  });
 	               };
 	
+	               var record_duration = 0;
+	
 	               if (soundFileName.startsWith("SND_")) {
 	                  tabletInterface.io_loadFileAPIBinaryURL(soundFileName, function (url) {
-	                     player(url);
+	
+	                     var db = openDatabase('jr', '1.0', 'Scratch Junior', 2 * 1024 * 1024);
+	
+	                     db.transaction(function (tx) {
+	
+	                        tx.executeSql("SELECT record_duration FROM sound_records WHERE record_name =  ?", [soundFileName], function (tx, result) {
+	
+	                           record_duration = result.rows.item(0)["record_duration"];
+	
+	                           player(url, record_duration);
+	                        }, function (tx, error) {});
+	                     });
 	                  });
 	               } else {
 	                  player('sounds/' + soundFileName);
@@ -6674,6 +6699,8 @@
 	               tx.executeSql('CREATE TABLE IF NOT EXISTS usershapes (id INTEGER PRIMARY KEY AUTOINCREMENT, altmd5, md5, width, height, ext, name, scale, version, ctime, mtime)');
 	
 	               tx.executeSql('CREATE TABLE IF NOT EXISTS cookies (id INTEGER PRIMARY KEY, cookie_content)'); //modified_by_Yaroslav
+	
+	               tx.executeSql('CREATE TABLE IF NOT EXISTS sound_records (id INTEGER PRIMARY KEY AUTOINCREMENT , record_name,record_duration)'); //modified_by_Yaroslav
 	            };
 	
 	            tabletInterface.database_query = function (dbCommand, callback) {
@@ -6971,12 +6998,22 @@
 	                  tabletInterface.mediaStreamSource.connect(tabletInterface.analyser);
 	
 	                  tabletInterface.mediaRecorder = new MediaRecorder(localMediaStream);
+	                  tabletInterface.record = {
+	
+	                     record_start_time: 0,
+	                     record_stop_time: 0,
+	                     record_duration: 0
+	
+	                  };
+	
 	                  tabletInterface.mediaRecorder.ondataavailable = function (e) {
 	                     tabletInterface.audioURL = window.URL.createObjectURL(e.data);
 	                     tabletInterface.audioData = e.data;
 	                     console.log("audio file is ready=" + tabletInterface.audioURL);
 	                  };
 	                  tabletInterface.mediaRecorder.start();
+	                  tabletInterface.record.record_start_time = Date.now();
+	                  console.log("record started at: " + tabletInterface.record.record_start_time + " ms");
 	
 	                  if (fcn) {
 	                     tabletInterface.audioName = "SND_" + new Date().getTime();
@@ -7007,6 +7044,8 @@
 	               console.log("recordsound_recordstop");
 	
 	               tabletInterface.mediaRecorder.stop();
+	               tabletInterface.record.record_stop_time = Date.now();
+	               console.log("record stoped at: " + tabletInterface.record.record_stop_time + " ms");
 	            };
 	            tabletInterface.recordsound_startplay = function () {
 	               console.log("recordsound_startplay");
@@ -7015,6 +7054,16 @@
 	            };
 	            tabletInterface.recordsound_recordclose = function () {
 	               console.log("recordsound_recordclose");
+	
+	               tabletInterface.record.record_duration = tabletInterface.record.record_stop_time - tabletInterface.record.record_start_time;
+	               console.log("record duration: " + tabletInterface.record.record_duration + " ms");
+	
+	               var db = openDatabase('jr', '1.0', 'Scratch Junior', 2 * 1024 * 1024);
+	
+	               db.transaction(function (tx) {
+	
+	                  tx.executeSql("INSERT INTO sound_records (record_name, record_duration) values(?, ?)", [tabletInterface.audioName + ".wav", tabletInterface.record.record_duration], null, null);
+	               });
 	
 	               tabletInterface.io_setmedianame(tabletInterface.audioData, tabletInterface.audioName, "wav");
 	            };
@@ -30549,8 +30598,11 @@
 	
 	            if (_lib.isAndroid) {
 	
+	                //    gn('project_load').ontouchstart = function(){};
 	                AndroidInterface.SjrFileChoose();
 	            } else {
+	
+	                (0, _lib.gn)('project_load').onmousedown = function () {};
 	
 	                if (oInputFile == undefined) {
 	                    oInputFile = document.createElement("input");
@@ -30567,6 +30619,7 @@
 	                setTimeout(function () {
 	                    oInputFile.click();
 	                    oInputFile.focus();
+	                    (0, _lib.gn)('project_load').onmousedown = UI.SjrFileChoose;
 	                }, 1000);
 	            }
 	        }
@@ -32903,7 +32956,7 @@
 	            this.borderOn = false;
 	            this.outline = document.createElement('canvas');
 	            this.code = new _Scripts2.default(this);
-	            this.need_flip = _MediaLib2.default.keys[md5].need_flip;
+	            this.need_flip = _MediaLib2.default.keys[md5] !== undefined ? _MediaLib2.default.keys[md5].need_flip : false;
 	            this.need_flip_source = this.need_flip;
 	            (0, _lib.setProps)(this, attr);
 	            if (_Localization2.default.isSampleLocalizedKey(this.name) && _ScratchJr2.default.isSampleOrStarter()) {
