@@ -62,6 +62,9 @@ export default class Block {
 
    cut_extension(file_name){
 
+      if ((file_name == undefined) || (file_name == 0) || (file_name == null))
+        return "Speaker";
+
         let extensions = [".wav",".webm",".mp3"];
 
         for (let i = 0; i< extensions.length;i++){
