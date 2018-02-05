@@ -647,11 +647,17 @@ export default class Scripts {
                 }
                 break;
             case 'playusersnd':
-                if (this.spr.sounds.length <= list[i][1]) {
+              /*  if (this.spr.sounds.length <= list[i][1]) {
                     list[i][0] = 'playsnd';
 //AZ TODO
 //                    list[i][1] = this.spr.sounds[0];
-                }
+                }*/
+
+
+                //modified_by_Yaroslav
+
+                  list[i][0] = 'playusersnd';  
+
                 break;
             case 'playsnd':
                 var snd = this.spr.sounds.indexOf(list[i][1]);

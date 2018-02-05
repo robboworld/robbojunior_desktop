@@ -337,7 +337,8 @@ static robot_send_power_command_desktop(robot_version, left_speed, right_speed){
 
     static playSound (strip) {
         var b = strip.thisblock;
-        var name = b.getSoundName(strip.spr.sounds);
+      //  var name = b.getSoundName(strip.spr.sounds); //modified_by_Yaroslav
+        var name = b.getSoundName(ScratchAudio.recordedSounds);
         //	console.log ('playSound', name);
         if (!strip.audio) {
             var snd = ScratchAudio.projectSounds[name];

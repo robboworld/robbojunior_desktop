@@ -331,6 +331,9 @@ export default class Project {
         for (var i = 0; i < pages.length; i++) {
             Project.recreatePage(pages[i], data[pages[i]]);
         }
+
+        ScratchAudio.copyRecordedSounds(data.sounds); //modified_by_Yaroslav
+
         mediaCountBase = mediaCount;
     }
 
@@ -488,6 +491,10 @@ export default class Project {
         for (var i = 0; i < ScratchJr.stage.pages.length; i++) {
             obj[ScratchJr.stage.pages[i].id] = ScratchJr.stage.pages[i].encodePage();
         }
+
+        //modified_by_Yaroslav
+        obj.sounds = ScratchAudio.recordedSounds;
+
         return obj;
     }
 

@@ -557,6 +557,16 @@ if(fcn){
       tabletInterface.recordsound_recordclose = function(){
          console.log("recordsound_recordclose");
 
+
+        if ((tabletInterface.record.record_stop_time < 0) || (tabletInterface.record.record_stop_time == null ) || (typeof(tabletInterface.record.record_stop_time) == 'undefined' ) )
+            {
+
+              tabletInterface.record.record_stop_time = Date.now();
+              console.log("record stoped at: " + tabletInterface.record.record_stop_time + " ms");
+
+
+            }
+
          tabletInterface.record.record_duration = tabletInterface.record.record_stop_time -  tabletInterface.record.record_start_time;
          console.log("record duration: " + tabletInterface.record.record_duration + " ms");
 
@@ -573,6 +583,10 @@ if(fcn){
 
 
          tabletInterface.io_setmedianame(tabletInterface.audioData, tabletInterface.audioName, "wav");
+
+
+          return tabletInterface.record;
+
       }
 
 

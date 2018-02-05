@@ -11,6 +11,7 @@ import MediaLib from '../../iPad/MediaLib';
 import Undo from '../ui/Undo';
 import Matrix from '../../geom/Matrix';
 import Vector from '../../geom/Vector';
+import ScratchAudio from '../../utils/ScratchAudio';
 import {newHTML, newDiv, gn,
     setCanvasSizeScaledToWindowDocumentHeight,
     DEGTOR, getIdFor, setProps, isTablet} from '../../utils/lib';
@@ -376,6 +377,10 @@ export default class Page {
             }
         }
         data.layers = layers;
+
+        
+
+
         return data;
     }
 

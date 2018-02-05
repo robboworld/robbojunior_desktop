@@ -297,12 +297,13 @@ export default class Record {
         iOS.recorddisappear('NO', Record.tearDownRecorder);
     }
 
-    static registerProjectSound () {
+    static registerProjectSound (record) {
         function whenDone (snd) {
             if (snd != 'error') {
                 var spr = ScratchJr.getSprite();
                 var page = spr.div.parentNode.owner;
                 spr.sounds.push(recordedSound);
+                ScratchAudio.addRecordedSound(recordedSound,record.record_duration); //modified_by_Yaroslav
                 Undo.record({
                     action: 'recordsound',
                     who: spr.id,

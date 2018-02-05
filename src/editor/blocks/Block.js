@@ -62,7 +62,7 @@ export default class Block {
 
    cut_extension(file_name){
 
-      if ((file_name == undefined) || (file_name == 0) || (file_name == null))
+      if ((typeof(file_name) != "string"))
         return "Speaker";
 
         let extensions = [".wav",".webm",".mp3"];
@@ -305,14 +305,31 @@ export default class Block {
     }
 
     getSoundName (list) {
-        var val = this.arg.argValue;
+      /*  var val = this.arg.argValue;
         if (Number(val).toString() == 'NaN') {
             return val;
         }
         if (list.length <= val) {
             return list[0];
         }
-        return list[val];
+        return list[val]; */
+
+          //modified_by_Yaroslav
+
+          var val = this.arg.argValue;
+
+          if (Number(val).toString() == 'NaN') {
+              return val;
+          }else{
+
+              return list[val].sound_name;
+
+
+          }
+
+
+
+
     }
 
     update (spr) {

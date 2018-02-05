@@ -15,6 +15,8 @@ let projectSounds = {};
 
 let customSounds = [];
 
+let recordedSounds = [];
+
 let custom_sound_index = 0;
 
 
@@ -30,6 +32,34 @@ export default class ScratchAudio {
 
     static get customSounds () {
         return customSounds;
+    }
+
+    static get recordedSounds () {
+        return recordedSounds;
+    }
+
+    static copyRecordedSounds (sounds_arr) {
+
+      sounds_arr.forEach(function(entry) {
+
+              recordedSounds.push(entry);
+              ScratchAudio.loadFromLocal('', entry.sound_name);
+          });
+
+    }
+
+
+    static addRecordedSound(sound_name,sound_duration){
+
+      let sound_object = {};
+
+      sound_object.sound_name = sound_name;
+      sound_object.sound_duration = sound_duration;
+
+      recordedSounds.push(sound_object);
+
+
+
     }
 
 
