@@ -46,3 +46,11 @@ Version 0.0.6 (On state: 25/01/2017)
 New features:
 
 1. New pictures were added to svglibrary.
+
+
+Version 0.0.7 (On state: 02/02/2017)
+
+
+Bug fixed:
+
+1.  Fixed an error with sound blocks name. Now we can load a project despite we have an incorrect block name. 

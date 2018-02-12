@@ -1,7 +1,7 @@
 Package: robbojunior
-Version: 0.0.3
+Version: 0.0.7
 Architecture: amd64
 Maintainer: ScratchDuino2 <info@scratchduino.ru>
-Description:  0.0.3
+Description:  0.0.7
 Installed-Size: 170000
 Depends: libgtk2.0-0, fontconfig, libnss3, libssl1.0.0, libasound2, libc6, libgif4 | libgif7, libpng12-0, libpulse0, libx11-6, libxext6, libxi6, libxrender1, libxtst6, libxt6, libasound2-plugins, libcurl3, gksu, wmctrl, avrdude, menu, zenity
