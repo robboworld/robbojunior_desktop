@@ -29,7 +29,7 @@ var FilterFunc = function(file){
 
 var fileName = "";
 
-var FORBIDDEN = ["build_distribution_package","src",".git","build.sh","build.sh.old","build.js","README.md",".gitignore","node_modules"];
+var FORBIDDEN = ["build_distribution_package","src",".git","build.sh","build.sh.old","build.js","README.md",".gitignore","node_modules","_svglibrary","_media.json","package-lock.json"];
 
 
 //FORBIDDEN.forEach(entry => {if (entry != file) console.log(file); else console.log("forbidden")});

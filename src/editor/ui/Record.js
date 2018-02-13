@@ -302,8 +302,8 @@ export default class Record {
             if (snd != 'error') {
                 var spr = ScratchJr.getSprite();
                 var page = spr.div.parentNode.owner;
-                spr.sounds.push(recordedSound);
-                ScratchAudio.addRecordedSound(recordedSound,record.record_duration); //modified_by_Yaroslav
+              //  spr.sounds.push(recordedSound);
+                ScratchAudio.addRecordedSound(recordedSound,record.record_duration,record.record_data); //modified_by_Yaroslav
                 Undo.record({
                     action: 'recordsound',
                     who: spr.id,

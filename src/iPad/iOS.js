@@ -126,7 +126,9 @@ var player = function(url,duration){
    audio.addEventListener('loadedmetadata', function(){
 
 
-     if(audio.duration === Infinity){
+    // if(audio.duration === Infinity){
+
+    if((typeof(audio.duration) != "number") || (audio.duration === Infinity)){
 
 
     //  setTimeout(infinity_case(audio,fcn),2000);
@@ -353,15 +355,30 @@ if(fcn){
                 fileEntry.createWriter(function(fileWriter) {
 
                    fileWriter.onwriteend = function(e) {
+
                       console.log('Write completed.');
+
+                      if((callback) && ((data instanceof Blob))){
+                        console.log('Data is  a blob. Sound save c callback case.');
+                         callback();
+                      }
                    }
 
                    fileWriter.onerror = function(e) {
                       console.log('Write failed: ' + e.toString());
                    };
 
+                    if (!(data instanceof Blob)){
+
                    var bb = new Blob([data]); // Note: window.WebKitBlobBuilder in Chrome 12.
                    fileWriter.write(bb);
+
+                 }else{
+
+                    fileWriter.write(data);
+
+
+                 }
 
                 });
              }, errorHandler);
@@ -378,7 +395,9 @@ if(fcn){
           );
 
 
-          if(callback){
+          if((callback) && (!(data instanceof Blob))){
+
+              console.log('Data is not a blob. Standart callback case.');
              callback(name + "." + extension);
           }
        }
@@ -453,8 +472,59 @@ if(fcn){
           function onInitFs(fs) {
              console.log('Opened file system: ' + fs.name);
 
+             let create_option = {};
 
-             fs.root.getFile(sFile, {create: true}, function(fileEntry) {
+             if (sFile.startsWith("SND_")){
+
+                create_option.create = false;
+
+             }else{
+
+                  create_option.create = true;
+                  //{create: true}
+
+             }
+
+
+
+
+
+
+            var    listResults = function(entries){
+
+                    entries.forEach(function(entry, i) {
+
+                          console.log("Directory entry: " + entry + "name: " + entry.name + " " + "full_path: " + entry.fullPath);
+
+                    });
+
+
+            }
+
+
+             var dirReader = fs.root.createReader();
+                  var entries = [];
+
+                  var readEntries = function() {
+
+                    function toArray(list) {
+                        return Array.prototype.slice.call(list || [], 0);
+                      }
+
+                     dirReader.readEntries (function(results) {
+                      if (!results.length) {
+                        listResults(entries.sort());
+                      } else {
+                        entries = entries.concat(toArray(results));
+                        readEntries();
+                      }
+                    }, errorHandler);
+                  };
+
+                  readEntries();
+
+
+             fs.root.getFile(sFile, create_option, function(fileEntry) {
                 fileEntry.file(function(file) {
                    var reader = new FileReader();
 
@@ -582,9 +652,13 @@ if(fcn){
          });
 
 
+
+
+
+
          tabletInterface.io_setmedianame(tabletInterface.audioData, tabletInterface.audioName, "wav");
 
-
+         tabletInterface.record.record_data  = new Blob([tabletInterface.audioData]);
           return tabletInterface.record;
 
       }
@@ -972,6 +1046,9 @@ if(fcn){
     }
 
     static setmedianame (str, name, ext, fcn) {
+
+      console.log("setmedianame() | name:" + name);
+
         var result;
         if(isTablet){
            result = tabletInterface.io_setmedianame(str, name, ext);

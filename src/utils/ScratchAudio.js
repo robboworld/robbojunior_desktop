@@ -49,18 +49,31 @@ export default class ScratchAudio {
     }
 
 
-    static addRecordedSound(sound_name,sound_duration){
+    static addRecordedSound(sound_name,sound_duration,sound_data){
+
+       console.log('addRecordedSound');
 
       let sound_object = {};
 
-      sound_object.sound_name = sound_name;
-      sound_object.sound_duration = sound_duration;
+      let reader = new FileReader();
+
+      reader.onloadend = function(e) {
+
+       sound_object.sound_name = sound_name;
+       sound_object.sound_duration = sound_duration;
+       sound_object.sound_data = reader.result;
+
 
       recordedSounds.push(sound_object);
 
+      };
 
 
-    }
+      reader.readAsDataURL(sound_data);
+
+
+
+      }
 
 
     static sndFX (name) {

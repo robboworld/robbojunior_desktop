@@ -140,7 +140,7 @@ export default class IO {
             var imageCount = images.length;
             if (imageCount < 1){
 
-                whenDone();    
+                whenDone();
 
             }else
             for (var i = 0; i < images.length; i++) {
@@ -439,6 +439,11 @@ export default class IO {
                 zipAssetsExpected++;
             }
 
+            var sounds_json = {};
+                sounds_json.sounds = ScratchAudio.recordedSounds;
+
+              zipFile.file('project/sounds.json', JSON.stringify(sounds_json), {});
+
             // Now the UI should wait for actual media count to equal expected media count
             // This could pause if getmedia takes a long time, for example,
             // if we have many large sprites or large sounds
@@ -597,6 +602,85 @@ export default class IO {
                         }
                     }
                 }
+            }else if (fullName == 'sounds.json'){
+
+                  let jsonData = JSON.parse(file.asText());
+
+                  let recorded_sounds = jsonData.sounds;
+
+                  let  base64toBlob =  function(base64Data, contentType) {
+                      contentType = contentType || '';
+                      var sliceSize = 1024;
+                      base64Data =  base64Data.replace("data:;base64,","");
+                      var byteCharacters = atob(base64Data);
+                      var bytesLength = byteCharacters.length;
+                      var slicesCount = Math.ceil(bytesLength / sliceSize);
+                      var byteArrays = new Array(slicesCount);
+
+                      for (var sliceIndex = 0; sliceIndex < slicesCount; ++sliceIndex) {
+                          var begin = sliceIndex * sliceSize;
+                          var end = Math.min(begin + sliceSize, bytesLength);
+
+                          var bytes = new Array(end - begin);
+                          for (var offset = begin, i = 0 ; offset < end; ++i, ++offset) {
+                              bytes[i] = byteCharacters[offset].charCodeAt(0);
+                          }
+                          byteArrays[sliceIndex] = new Uint8Array(bytes);
+                      }
+                      return new Blob(byteArrays, { type: contentType });
+                  }
+
+
+
+
+         let query = function(record_name,record_duration,record_data){
+
+                  var json = {};
+                  json.cond = 'record_name = ?';
+                  json.items = ['*'];
+                  json.values = [record_name];
+                  json.order = '';
+                  IO.query('sound_records', json, function (results) {
+                      results = JSON.parse(results);
+                      if (results.length == 0) {
+
+                          var json = {};
+                          var keylist = ['record_name', 'record_duration'];
+                          var values = '?,?';
+                          json.values = [record_name,record_duration];
+                          json.stmt = 'insert into sound_records (' + keylist.toString() +
+                              ') values (' + values + ')';
+                          iOS.stmt(json, function () {
+
+                             let record_data_blob = base64toBlob(record_data,"video/webm");
+
+                              ScratchAudio.addRecordedSound(record_name,record_duration,record_data_blob);
+                              ScratchAudio.loadFromLocal('', record_name);
+                              record_name = record_name.replace(".wav","");
+                              iOS.setmedianame(record_data_blob,record_name,"wav",function (){
+
+                                  saveActual++;
+                              });
+
+                          });
+                      } else {
+                        saveActual++;
+                      }
+                  });
+
+              };
+
+
+
+                  recorded_sounds.forEach(function(entry) {
+
+                          saveExpected++;
+                          console.log("Importing record:" + entry.sound_name);
+                          query(entry.sound_name,entry.sound_duration,entry.sound_data);
+
+
+                      });
+
             }
         });
 
