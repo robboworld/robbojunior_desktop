@@ -6121,6 +6121,11 @@
 	                    zipAssetsExpected++;
 	                }
 	
+	                var sounds_json = {};
+	                sounds_json.sounds = ScratchAudio.recordedSounds;
+	
+	                zipFile.file('project/sounds.json', JSON.stringify(sounds_json), {});
+	
 	                // Now the UI should wait for actual media count to equal expected media count
 	                // This could pause if getmedia takes a long time, for example,
 	                // if we have many large sprites or large sounds
@@ -6274,6 +6279,74 @@
 	                            }
 	                        }
 	                    }
+	                } else if (fullName == 'sounds.json') {
+	
+	                    var _jsonData = JSON.parse(file.asText());
+	
+	                    var recorded_sounds = _jsonData.sounds;
+	
+	                    var base64toBlob = function base64toBlob(base64Data, contentType) {
+	                        contentType = contentType || '';
+	                        var sliceSize = 1024;
+	                        base64Data = base64Data.replace("data:;base64,", "");
+	                        var byteCharacters = atob(base64Data);
+	                        var bytesLength = byteCharacters.length;
+	                        var slicesCount = Math.ceil(bytesLength / sliceSize);
+	                        var byteArrays = new Array(slicesCount);
+	
+	                        for (var sliceIndex = 0; sliceIndex < slicesCount; ++sliceIndex) {
+	                            var begin = sliceIndex * sliceSize;
+	                            var end = Math.min(begin + sliceSize, bytesLength);
+	
+	                            var bytes = new Array(end - begin);
+	                            for (var offset = begin, i = 0; offset < end; ++i, ++offset) {
+	                                bytes[i] = byteCharacters[offset].charCodeAt(0);
+	                            }
+	                            byteArrays[sliceIndex] = new Uint8Array(bytes);
+	                        }
+	                        return new Blob(byteArrays, { type: contentType });
+	                    };
+	
+	                    var query = function query(record_name, record_duration, record_data) {
+	
+	                        var json = {};
+	                        json.cond = 'record_name = ?';
+	                        json.items = ['*'];
+	                        json.values = [record_name];
+	                        json.order = '';
+	                        IO.query('sound_records', json, function (results) {
+	                            results = JSON.parse(results);
+	                            if (results.length == 0) {
+	
+	                                var json = {};
+	                                var keylist = ['record_name', 'record_duration'];
+	                                var values = '?,?';
+	                                json.values = [record_name, record_duration];
+	                                json.stmt = 'insert into sound_records (' + keylist.toString() + ') values (' + values + ')';
+	                                _iOS2.default.stmt(json, function () {
+	
+	                                    var record_data_blob = base64toBlob(record_data, "video/webm");
+	
+	                                    ScratchAudio.addRecordedSound(record_name, record_duration, record_data_blob);
+	                                    ScratchAudio.loadFromLocal('', record_name);
+	                                    record_name = record_name.replace(".wav", "");
+	                                    _iOS2.default.setmedianame(record_data_blob, record_name, "wav", function () {
+	
+	                                        saveActual++;
+	                                    });
+	                                });
+	                            } else {
+	                                saveActual++;
+	                            }
+	                        });
+	                    };
+	
+	                    recorded_sounds.forEach(function (entry) {
+	
+	                        saveExpected++;
+	                        console.log("Importing record:" + entry.sound_name);
+	                        query(entry.sound_name, entry.sound_duration, entry.sound_data);
+	                    });
 	                }
 	            });
 	
@@ -6629,7 +6702,9 @@
 	                  var audio = new Audio(url);
 	                  audio.addEventListener('loadedmetadata', function () {
 	
-	                     if (audio.duration === Infinity) {
+	                     // if(audio.duration === Infinity){
+	
+	                     if (typeof audio.duration != "number" || audio.duration === Infinity) {
 	
 	                        //  setTimeout(infinity_case(audio,fcn),2000);
 	
@@ -6885,15 +6960,27 @@
 	                     fileEntry.createWriter(function (fileWriter) {
 	
 	                        fileWriter.onwriteend = function (e) {
+	
 	                           console.log('Write completed.');
+	
+	                           if (callback && data instanceof Blob) {
+	                              console.log('Data is  a blob. Sound save c callback case.');
+	                              callback();
+	                           }
 	                        };
 	
 	                        fileWriter.onerror = function (e) {
 	                           console.log('Write failed: ' + e.toString());
 	                        };
 	
-	                        var bb = new Blob([data]); // Note: window.WebKitBlobBuilder in Chrome 12.
-	                        fileWriter.write(bb);
+	                        if (!(data instanceof Blob)) {
+	
+	                           var bb = new Blob([data]); // Note: window.WebKitBlobBuilder in Chrome 12.
+	                           fileWriter.write(bb);
+	                        } else {
+	
+	                           fileWriter.write(data);
+	                        }
 	                     });
 	                  }, errorHandler);
 	               };
@@ -6905,7 +6992,9 @@
 	                  window.webkitRequestFileSystem(PERSISTENT, grantedBytes, onInitFs, errorHandler);
 	               }, errorHandler);
 	
-	               if (callback) {
+	               if (callback && !(data instanceof Blob)) {
+	
+	                  console.log('Data is not a blob. Standart callback case.');
 	                  callback(name + "." + extension);
 	               }
 	            };
@@ -6965,7 +7054,47 @@
 	               function onInitFs(fs) {
 	                  console.log('Opened file system: ' + fs.name);
 	
-	                  fs.root.getFile(sFile, { create: true }, function (fileEntry) {
+	                  var create_option = {};
+	
+	                  if (sFile.startsWith("SND_")) {
+	
+	                     create_option.create = false;
+	                  } else {
+	
+	                     create_option.create = true;
+	                     //{create: true}
+	                  }
+	
+	                  var listResults = function listResults(entries) {
+	
+	                     entries.forEach(function (entry, i) {
+	
+	                        console.log("Directory entry: " + entry + "name: " + entry.name + " " + "full_path: " + entry.fullPath);
+	                     });
+	                  };
+	
+	                  var dirReader = fs.root.createReader();
+	                  var entries = [];
+	
+	                  var readEntries = function readEntries() {
+	
+	                     function toArray(list) {
+	                        return Array.prototype.slice.call(list || [], 0);
+	                     }
+	
+	                     dirReader.readEntries(function (results) {
+	                        if (!results.length) {
+	                           listResults(entries.sort());
+	                        } else {
+	                           entries = entries.concat(toArray(results));
+	                           readEntries();
+	                        }
+	                     }, errorHandler);
+	                  };
+	
+	                  readEntries();
+	
+	                  fs.root.getFile(sFile, create_option, function (fileEntry) {
 	                     fileEntry.file(function (file) {
 	                        var reader = new FileReader();
 	
@@ -7055,6 +7184,12 @@
 	            tabletInterface.recordsound_recordclose = function () {
 	               console.log("recordsound_recordclose");
 	
+	               if (tabletInterface.record.record_stop_time < 0 || tabletInterface.record.record_stop_time == null || typeof tabletInterface.record.record_stop_time == 'undefined') {
+	
+	                  tabletInterface.record.record_stop_time = Date.now();
+	                  console.log("record stoped at: " + tabletInterface.record.record_stop_time + " ms");
+	               }
+	
 	               tabletInterface.record.record_duration = tabletInterface.record.record_stop_time - tabletInterface.record.record_start_time;
 	               console.log("record duration: " + tabletInterface.record.record_duration + " ms");
 	
@@ -7066,6 +7201,9 @@
 	               });
 	
 	               tabletInterface.io_setmedianame(tabletInterface.audioData, tabletInterface.audioName, "wav");
+	
+	               tabletInterface.record.record_data = new Blob([tabletInterface.audioData]);
+	               return tabletInterface.record;
 	            };
 	
 	            tabletInterface.scratchjr_choosecamera = function () {
@@ -7390,6 +7528,9 @@
 	   }, {
 	      key: 'setmedianame',
 	      value: function setmedianame(str, name, ext, fcn) {
+	
+	         console.log("setmedianame() | name:" + name);
+	
 	         var result;
 	         if (_lib.isTablet) {
 	            result = tabletInterface.io_setmedianame(str, name, ext);
@@ -8170,6 +8311,8 @@
 	
 	var customSounds = [];
 	
+	var recordedSounds = [];
+	
 	var custom_sound_index = 0;
 	
 	var ScratchAudio = function () {
@@ -8178,6 +8321,37 @@
 	    }
 	
 	    _createClass(ScratchAudio, null, [{
+	        key: 'copyRecordedSounds',
+	        value: function copyRecordedSounds(sounds_arr) {
+	
+	            sounds_arr.forEach(function (entry) {
+	
+	                recordedSounds.push(entry);
+	                ScratchAudio.loadFromLocal('', entry.sound_name);
+	            });
+	        }
+	    }, {
+	        key: 'addRecordedSound',
+	        value: function addRecordedSound(sound_name, sound_duration, sound_data) {
+	
+	            console.log('addRecordedSound');
+	
+	            var sound_object = {};
+	
+	            var reader = new FileReader();
+	
+	            reader.onloadend = function (e) {
+	
+	                sound_object.sound_name = sound_name;
+	                sound_object.sound_duration = sound_duration;
+	                sound_object.sound_data = reader.result;
+	
+	                recordedSounds.push(sound_object);
+	            };
+	
+	            reader.readAsDataURL(sound_data);
+	        }
+	    }, {
 	        key: 'sndFX',
 	        value: function sndFX(name) {
 	            ScratchAudio.sndFXWithVolume(name, 1.0);
@@ -8298,6 +8472,11 @@
 	        key: 'customSounds',
 	        get: function get() {
 	            return customSounds;
+	        }
+	    }, {
+	        key: 'recordedSounds',
+	        get: function get() {
+	            return recordedSounds;
 	        }
 	    }]);
 	
@@ -9318,6 +9497,9 @@
 	            for (var i = 0; i < pages.length; i++) {
 	                Project.recreatePage(pages[i], data[pages[i]]);
 	            }
+	
+	            ScratchAudio.copyRecordedSounds(data.sounds); //modified_by_Yaroslav
+	
 	            mediaCountBase = mediaCount;
 	        }
 	    }, {
@@ -9488,6 +9670,10 @@
 	            for (var i = 0; i < _ScratchJr2.default.stage.pages.length; i++) {
 	                obj[_ScratchJr2.default.stage.pages[i].id] = _ScratchJr2.default.stage.pages[i].encodePage();
 	            }
+	
+	            //modified_by_Yaroslav
+	            obj.sounds = ScratchAudio.recordedSounds;
+	
 	            return obj;
 	        }
 	    }, {
@@ -9778,7 +9964,7 @@
 	var currentProject = undefined;
 	var editmode = void 0;
 	
-	var isDebugging = false;
+	var isDebugging = true; //modified_by_Yaroslav
 	var time = void 0;
 	var userStart = false;
 	var onHold = false;
@@ -22577,7 +22763,8 @@
 	        key: 'playSound',
 	        value: function playSound(strip) {
 	            var b = strip.thisblock;
-	            var name = b.getSoundName(strip.spr.sounds);
+	            //  var name = b.getSoundName(strip.spr.sounds); //modified_by_Yaroslav
+	            var name = b.getSoundName(_ScratchAudio2.default.recordedSounds);
 	            //	console.log ('playSound', name);
 	            if (!strip.audio) {
 	                var snd = _ScratchAudio2.default.projectSounds[name];
@@ -26138,7 +26325,7 @@
 	        key: 'cut_extension',
 	        value: function cut_extension(file_name) {
 	
-	            if (file_name == undefined || file_name == 0 || file_name == null) return "Speaker";
+	            if (typeof file_name != "string") return "Speaker";
 	
 	            var extensions = [".wav", ".webm", ".mp3"];
 	
@@ -26366,14 +26553,25 @@
 	    }, {
 	        key: 'getSoundName',
 	        value: function getSoundName(list) {
+	            /*  var val = this.arg.argValue;
+	              if (Number(val).toString() == 'NaN') {
+	                  return val;
+	              }
+	              if (list.length <= val) {
+	                  return list[0];
+	              }
+	              return list[val]; */
+	
+	            //modified_by_Yaroslav
+	
 	            var val = this.arg.argValue;
+	
 	            if (Number(val).toString() == 'NaN') {
 	                return val;
+	            } else {
+	
+	                return list[val].sound_name;
 	            }
-	            if (list.length <= val) {
-	                return list[0];
-	            }
-	            return list[val];
 	        }
 	    }, {
 	        key: 'update',
@@ -29566,12 +29764,13 @@
 	        }
 	    }, {
 	        key: 'registerProjectSound',
-	        value: function registerProjectSound() {
+	        value: function registerProjectSound(record) {
 	            function whenDone(snd) {
 	                if (snd != 'error') {
 	                    var spr = _ScratchJr2.default.getSprite();
 	                    var page = spr.div.parentNode.owner;
-	                    spr.sounds.push(recordedSound);
+	                    //  spr.sounds.push(recordedSound);
+	                    _ScratchAudio2.default.addRecordedSound(recordedSound, record.record_duration, record.record_data); //modified_by_Yaroslav
 	                    _Undo2.default.record({
 	                        action: 'recordsound',
 	                        who: spr.id,
@@ -29712,6 +29911,10 @@
 	var _Vector = __webpack_require__(19);
 	
 	var _Vector2 = _interopRequireDefault(_Vector);
+	
+	var _ScratchAudio = __webpack_require__(10);
+	
+	var _ScratchAudio2 = _interopRequireDefault(_ScratchAudio);
 	
 	var _lib = __webpack_require__(1);
 	
@@ -30100,6 +30303,7 @@
 	                }
 	            }
 	            data.layers = layers;
+	
 	            return data;
 	        }
 	    }, {
@@ -34933,11 +35137,16 @@
 	                        }
 	                        break;
 	                    case 'playusersnd':
-	                        if (this.spr.sounds.length <= list[i][1]) {
-	                            list[i][0] = 'playsnd';
-	                            //AZ TODO
-	                            //                    list[i][1] = this.spr.sounds[0];
-	                        }
+	                        /*  if (this.spr.sounds.length <= list[i][1]) {
+	                              list[i][0] = 'playsnd';
+	                        //AZ TODO
+	                        //                    list[i][1] = this.spr.sounds[0];
+	                          }*/
+	
+	                        //modified_by_Yaroslav
+	
+	                        list[i][0] = 'playusersnd';
+	
 	                        break;
 	                    case 'playsnd':
 	                        var snd = this.spr.sounds.indexOf(list[i][1]);
