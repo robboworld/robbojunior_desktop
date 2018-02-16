@@ -1,6 +1,6 @@
 {
   "name": "RobboJunior",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "RobboJunior desktop application",
   "main": "main.js",
   "scripts": {

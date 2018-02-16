@@ -54,3 +54,16 @@ Version 0.0.7 (On state: 02/02/2017)
 Bug fixed:
 
 1.  Fixed an error with sound blocks name. Now we can load a project despite we have an incorrect block name. 
+
+
+Version 0.0.8 (On state: 16/02/2017)
+
+
+Bug fixed:
+
+1.  Fixed an error with playing sounds  which were recorded on one character but are tried to play on other.  
+
+New features:
+
+1. Now users can save their records in .sjr files. 
+
