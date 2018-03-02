@@ -249,13 +249,15 @@ export default class Library {
      nativeJr = true;
      var div = gn('scrollarea');
      let library_sounds = [];
+     let recorded_sounds_index = 0;
      //var data = JSON.parse(str);
      if (data.length > 0) {
          for (var i = 0; i < data.length; i++) {
 
             if (data[i].name.startsWith("SND")){
-             Library.addSoundAssetThumbChoose(div, data[i], 120 * scaleMultiplier, 90 * scaleMultiplier,
+             Library.addSoundAssetThumbChoose(div, data[i], recorded_sounds_index,120 * scaleMultiplier, 90 * scaleMultiplier,
                  Library.selectSoundAsset);
+                 recorded_sounds_index++;
             }else{
 
                   library_sounds.push(data[i]);
@@ -338,7 +340,7 @@ export default class Library {
     }
 
 
-    static addSoundAssetThumbChoose (parent, aa, w, h, fcn) {
+    static addSoundAssetThumbChoose (parent, aa, sound_index, w, h, fcn) {
         var data = aa;
         var tb = document.createElement('div');
         parent.appendChild(tb);
@@ -357,6 +359,18 @@ export default class Library {
         img.style.position = 'relative';
         img.style.height = (h * scale) + 'px';
         img.src = "svglibrary/" + "Speaker.svg";
+
+        var sound_index_block  = newHTML('div',undefined,tb); //modified_by_Yaroslav //Robbo team patches
+
+        sound_index_block.style.height = (15 * scale) + 'px'; //15 is random number which is mostly suitable (in my opinion) for for sound_index_block height
+        sound_index_block.style.left = (9 * scaleMultiplier) + 'px';
+        sound_index_block.style.top = img.style.top + (img.style.height -  ( sound_index_block.style.height + 3)); //top edge of sound_index_block should be placed in the left bottom corner of image element
+                                                                                                                  //3 is a random number for indent  
+        sound_index_block.style.position = 'relative';
+
+        sound_index_block.innerHTML = `<span class="sound_index_block">${sound_index}</span>`;
+
+
         /*if (data.altmd5) {
             IO.getAsset(data.altmd5, drawMe);
         }

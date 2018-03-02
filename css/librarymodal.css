@@ -140,6 +140,15 @@
 Assets chooser
 */
 
+
+.sound_index_block{
+
+    font-size: ${15 * scaleMultiplier}px;
+    font-weight:bold;
+    color:green;
+
+}
+
 *.innerlibrary {
     padding: ${css_vh(11.72)} ${css_vh(0.00)} ${css_vh(6.51)};
     margin: ${css_vh(0.00)};

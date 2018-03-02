@@ -320,6 +320,7 @@ export default class Block {
 
           if (Number(val).toString() == 'NaN') {
               return val;
+              
           }else{
 
               return list[val].sound_name;

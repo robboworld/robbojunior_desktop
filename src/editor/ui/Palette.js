@@ -15,6 +15,7 @@ import Rectangle from '../../geom/Rectangle';
 import DrawPath from '../../utils/DrawPath';
 import ScratchAudio from '../../utils/ScratchAudio';
 import Record from './Record';
+import Sound from '../../utils/Sound';
 import {frame, gn, localx, newHTML, scaleMultiplier, isTablet, newDiv, newDiv_extended,
     setProps, globalx, localy, globaly, drawScaled, newCanvas,
     setCanvasSize, hitRect, writeText, getStringSize} from '../../utils/lib';
@@ -109,7 +110,7 @@ export default class Palette {
                 continue;
             }
             if (ScratchJr.shaking && (ScratchJr.shaking == ths)) {
-                Palette.removeSound(ths);
+                Palette.__robbo__removeSound(ths);
             } else {
                 Events.startDrag(e, ths, Palette.prepareForDrag,
                     Palette.dropBlockFromPalette, ScriptsPane.draggingBlock, Palette.showHelp, Palette.startShaking);
@@ -122,6 +123,30 @@ export default class Palette {
         var val = ths.owner.getArgValue();
         var list = ScratchJr.getActiveScript().owner.spr.sounds;
         return list.indexOf(val) > 0;
+    }
+
+
+    static __robbo__removeSound(ths){       //modified_by_Yaroslav
+                                            //Robbo team patches
+
+        ScratchAudio.sndFX('cut.wav');
+        var arg = ths.owner.getArgValue();
+
+        let sound_name = ths.owner.getSoundName(ScratchAudio.recordedSounds);
+
+        console.log("Deleting sound: " +  sound_name + " index: " + sound_blocks_arr.indexOf(sound_name));
+
+
+        sound_blocks_arr.splice(sound_blocks_arr.indexOf(sound_name),1); //delete dound from sounds array
+      //  ths.owner.div.remove();
+
+
+
+        Palette.innerHTML="";   //Clear the palette
+        new_dxblocks = 0;
+
+        Palette.selectCategory(3); //Palette recreate
+
     }
 
     static removeSound (ths) {
@@ -180,9 +205,9 @@ export default class Palette {
         if (!b.owner) {
             return;
         }
-        if (b.owner.blocktype != 'playusersnd') {
+      /*  if (b.owner.blocktype != 'playusersnd') {
             Palette.showHelp(null, b); return;
-        }
+        }*/
         ScratchJr.shaking = b;
         ScratchJr.stopShaking = Palette.stopShaking;
         b.setAttribute('class', 'shakeme');
@@ -191,7 +216,9 @@ export default class Palette {
 
     static clickBlock (e, b) {
         if (ScratchJr.shaking && (b == ScratchJr.shaking)) {
-            Palette.removeSound(b);
+          //  Palette.removeSound(b);
+           Palette.__robbo__removeSound(b);
+
         } else {
             ScratchJr.clearSelection();
             Palette.showHelp(e, b);
@@ -634,6 +661,9 @@ export default class Palette {
     //  if (sound_blocks_count < 5){
 
         var pal = gn('palette');
+
+      //  pal.innerHTML  = "";
+
         var spr = ScratchJr.getSprite();
 
           var dx = new_dxblocks;
