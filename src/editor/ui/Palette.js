@@ -134,7 +134,7 @@ export default class Palette {
 
         let sound_name = ths.owner.getSoundName(ScratchAudio.recordedSounds);
 
-        console.log("Deleting sound: " +  sound_name + " index: " + sound_blocks_arr.indexOf(sound_name));
+        console.log("Deleting sound from sound palette: " +  sound_name + " index: " + sound_blocks_arr.indexOf(sound_name));
 
 
         sound_blocks_arr.splice(sound_blocks_arr.indexOf(sound_name),1); //delete dound from sounds array

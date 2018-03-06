@@ -25441,21 +25441,24 @@
 	    }, {
 	        key: '__robbo__removeSound',
 	        value: function __robbo__removeSound(ths) {
+	            //modified_by_Yaroslav
+	            //Robbo team patches
 	
 	            _ScratchAudio2.default.sndFX('cut.wav');
 	            var arg = ths.owner.getArgValue();
 	
 	            var sound_name = ths.owner.getSoundName(_ScratchAudio2.default.recordedSounds);
 	
-	            console.log("Deleting sound: " + sound_name + " index: " + sound_blocks_arr.indexOf(sound_name));
+	            console.log("Deleting sound from sound palette: " + sound_name + " index: " + sound_blocks_arr.indexOf(sound_name));
 	
-	            sound_blocks_arr.splice(sound_blocks_arr.indexOf(sound_name), 1);
+	            sound_blocks_arr.splice(sound_blocks_arr.indexOf(sound_name), 1); //delete dound from sounds array
 	            //  ths.owner.div.remove();
 	
 	
-	            Palette.innerHTML = "";
+	            Palette.innerHTML = ""; //Clear the palette
 	            new_dxblocks = 0;
-	            Palette.selectCategory(3);
+	
+	            Palette.selectCategory(3); //Palette recreate
 	        }
 	    }, {
 	        key: 'removeSound',
