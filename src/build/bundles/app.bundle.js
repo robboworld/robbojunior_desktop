@@ -248,6 +248,7 @@
 	exports.getHex = getHex;
 	exports.findKeyframesRule = findKeyframesRule;
 	exports.colorToRGBA = colorToRGBA;
+	exports.css_h = css_h;
 	exports.css_vh = css_vh;
 	exports.css_vw = css_vw;
 	var frame = exports.frame = undefined;
@@ -934,6 +935,10 @@
 	 * here we introduce functioncs (called from the preprocessed css) that emulate their behavior by
 	 * turning them into pixel values.
 	 */
+	function css_h(y) {
+	    return y * WINDOW_INNER_HEIGHT / 100.0;
+	}
+	
 	function css_vh(y) {
 	    return y * WINDOW_INNER_HEIGHT / 100.0 + 'px';
 	}
@@ -8321,6 +8326,12 @@
 	    }
 	
 	    _createClass(ScratchAudio, null, [{
+	        key: 'deleteProjectSound',
+	        value: function deleteProjectSound(sound_name) {
+	
+	            delete projectSounds[sound_name];
+	        }
+	    }, {
 	        key: 'copyRecordedSounds',
 	        value: function copyRecordedSounds(sounds_arr) {
 	
@@ -25439,23 +25450,52 @@
 	            return list.indexOf(val) > 0;
 	        }
 	    }, {
+	        key: '__robbo__clearPalette',
+	        value: function __robbo__clearPalette() {
+	
+	            Palette.innerHTML = ""; //Clear the palette
+	            new_dxblocks = 10;
+	
+	            Palette.selectCategory(3); //Palette recreate
+	        }
+	    }, {
+	        key: '__robbo__removeSoundExtrenal',
+	        value: function __robbo__removeSoundExtrenal(sound_name) {
+	
+	            console.log("Deleting sound from sound palette: " + sound_name + " index: " + sound_blocks_arr.indexOf(sound_name));
+	
+	            if (sound_blocks_arr.indexOf(sound_name) !== -1) {
+	
+	                sound_blocks_arr.splice(sound_blocks_arr.indexOf(sound_name), 1); //delete dound from sounds array
+	
+	
+	                // Palette.innerHTML="";   //Clear the palette
+	                // new_dxblocks = 10;
+	                //
+	                // Palette.selectCategory(3); //Palette recreate
+	            }
+	        }
+	    }, {
 	        key: '__robbo__removeSound',
 	        value: function __robbo__removeSound(ths) {
+	            //modified_by_Yaroslav
+	            //Robbo team patches
 	
 	            _ScratchAudio2.default.sndFX('cut.wav');
 	            var arg = ths.owner.getArgValue();
 	
 	            var sound_name = ths.owner.getSoundName(_ScratchAudio2.default.recordedSounds);
 	
-	            console.log("Deleting sound: " + sound_name + " index: " + sound_blocks_arr.indexOf(sound_name));
+	            console.log("Deleting sound from sound palette: " + sound_name + " index: " + sound_blocks_arr.indexOf(sound_name));
 	
-	            sound_blocks_arr.splice(sound_blocks_arr.indexOf(sound_name), 1);
+	            sound_blocks_arr.splice(sound_blocks_arr.indexOf(sound_name), 1); //delete dound from sounds array
 	            //  ths.owner.div.remove();
 	
 	
-	            Palette.innerHTML = "";
+	            Palette.innerHTML = ""; //Clear the palette
 	            new_dxblocks = 0;
-	            Palette.selectCategory(3);
+	
+	            Palette.selectCategory(3); //Palette recreate
 	        }
 	    }, {
 	        key: 'removeSound',
@@ -25784,7 +25824,7 @@
 	
 	            var ns = (0, _lib.newDiv_extended)(pal, dx_blocks, blockdy, null, null, null, null, { class: 'addsound', id: "addsound" });
 	
-	            new_dxblocks = /*dx_blocks +*/betweenblocks / 2 + ns.offsetWidth;
+	            new_dxblocks = /*dx_blocks +*/betweenblocks / 2 + (0, _lib.css_h)(13); /* ns.getBoundingClientRect().width; */ //ns.offsetWidth;
 	
 	            ns.ontouchstart = Palette.addSoundToPalette;
 	            ns.onmousedown = Palette.addSoundToPalette;
@@ -28533,6 +28573,10 @@
 	            //AZ
 	            (0, _lib.gn)('okbut').onmousedown = Library.closeSoundSelection;
 	
+	            (0, _lib.gn)('cancelbut').ontouchstart = Library.sound_cancelPick;
+	            //AZ
+	            (0, _lib.gn)('cancelbut').onmousedown = Library.sound_cancelPick;
+	
 	            (0, _lib.gn)('library_paintme').style.visibility = 'hidden';
 	
 	            Library.clean();
@@ -28639,10 +28683,22 @@
 	            var okbut = (0, _lib.newHTML)('div', 'okicon', buttons);
 	            okbut.setAttribute('id', 'okbut');
 	            var cancelbut = (0, _lib.newHTML)('div', 'cancelicon', buttons);
+	            cancelbut.setAttribute('id', 'cancelbut');
 	
 	            cancelbut.ontouchstart = Library.cancelPick;
 	            //AZ
 	            cancelbut.onmousedown = Library.cancelPick;
+	        }
+	    }, {
+	        key: 'sound_cancelPick',
+	        value: function sound_cancelPick(e) {
+	            _ScratchJr2.default.onHold = true;
+	            Library.close(e);
+	            _Palette2.default.__robbo__clearPalette();
+	
+	            setTimeout(function () {
+	                _ScratchJr2.default.onHold = false;
+	            }, 1000);
 	        }
 	    }, {
 	        key: 'cancelPick',
@@ -28803,7 +28859,7 @@
 	            var data = aa;
 	            var tb = document.createElement('div');
 	            parent.appendChild(tb);
-	            //  tb.byme = nativeJr ? 1 : 0;
+	            tb.byme = nativeJr ? 1 : 0;
 	            var md5 = data.name;
 	            tb.setAttribute('class', 'assetbox off');
 	            tb.setAttribute('id', md5);
@@ -28824,7 +28880,7 @@
 	            sound_index_block.style.height = 15 * scale + 'px'; //15 is random number which is mostly suitable (in my opinion) for for sound_index_block height
 	            sound_index_block.style.left = 9 * _lib.scaleMultiplier + 'px';
 	            sound_index_block.style.top = img.style.top + (img.style.height - (sound_index_block.style.height + 3)); //top edge of sound_index_block should be placed in the left bottom corner of image element
-	            //3 is a random number for indent  
+	            //3 is a random number for indent
 	            sound_index_block.style.position = 'relative';
 	
 	            sound_index_block.innerHTML = '<span class="sound_index_block">' + sound_index + '</span>';
@@ -29022,7 +29078,8 @@
 	        value: function selectSoundAsset(e, tb) {
 	            tb.pt = JSON.stringify(_Events2.default.getTargetPoint(e));
 	            if (shaking && e.target.className == 'deleteasset') {
-	                //    Library.removeFromAssetList();
+	                Library.removeSoundFromLibrary();
+	                selectedOne = undefined;
 	                return;
 	            } else if (shaking) {
 	                Library.stopShaking();
@@ -29171,6 +29228,36 @@
 	                b.removeChild(ic);
 	            }
 	            shaking = undefined;
+	        }
+	    }, {
+	        key: 'removeSoundFromLibrary',
+	        value: function removeSoundFromLibrary() {
+	            _ScratchAudio2.default.sndFX('cut.wav');
+	            var b = shaking;
+	            b.parentNode.removeChild(b);
+	
+	            var record_name = b.id;
+	            var json = {};
+	            json.cond = 'record_name = ?';
+	            json.items = ['*'];
+	            json.values = [record_name];
+	            json.order = '';
+	            _IO2.default.query('sound_records', json, function (results) {
+	                results = JSON.parse(results);
+	                if (results.length != 0) {
+	
+	                    var json = {};
+	                    json.values = [record_name];
+	                    json.stmt = 'delete from sound_records where record_name  = ?';
+	                    _iOS2.default.stmt(json, function () {
+	
+	                        _ScratchAudio2.default.deleteProjectSound(record_name);
+	                        _Palette2.default.__robbo__removeSoundExtrenal(record_name);
+	                    });
+	                }
+	            });
+	
+	            return true;
 	        }
 	    }, {
 	        key: 'removeFromAssetList',
@@ -29382,6 +29469,8 @@
 	                _Palette2.default.addSoundsBlocks(sounds_list);
 	            }
 	            Library.close(e);
+	
+	            _Palette2.default.__robbo__clearPalette();
 	        }
 	    }, {
 	        key: 'closeSpriteSelection',

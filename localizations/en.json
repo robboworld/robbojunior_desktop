@@ -372,5 +372,6 @@
     "SAY_BLOCK_DEFAULT_ARGUMENT": "hi",
     "ALERT_BACK": "Back",
     "ALERT_SAVING": "Saving...",
-    "SELECT_LANGUAGE": "Select language"
+    "SELECT_LANGUAGE": "Select language",
+    "NAVIGATOR_USER_MEDIA_ERROR": "Error accessing the  microphone. Please, try to connect a microphone."
 }

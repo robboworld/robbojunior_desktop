@@ -177,5 +177,6 @@
   "SAY_BLOCK_DEFAULT_ARGUMENT": "Привет!",
   "ALERT_BACK": "Назад",
   "ALERT_SAVING": "Сохранение...",
-  "SELECT_LANGUAGE": "Выберите язык"
+  "SELECT_LANGUAGE": "Выберите язык",
+  "NAVIGATOR_USER_MEDIA_ERROR": "Ошибка доступа к микрофону.Возможно следует подключить микрофон."
 }

@@ -38,6 +38,12 @@ export default class ScratchAudio {
         return recordedSounds;
     }
 
+    static deleteProjectSound(sound_name){
+
+         delete  projectSounds[sound_name];
+
+    }
+
     static copyRecordedSounds (sounds_arr) {
 
       sounds_arr.forEach(function(entry) {

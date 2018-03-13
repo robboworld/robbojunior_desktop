@@ -4,6 +4,7 @@ import Lobby from '../lobby/Lobby';
 import Alert from '../editor/ui/Alert';
 import ScratchAudio from '../utils/ScratchAudio';
 import {isTablet} from '../utils/lib';
+import Localization from '../utils/Localization';
 
 //////////////////////////////////////////////////
 //  Tablet interface functions
@@ -591,7 +592,10 @@ if(fcn){
                }
             },
             function(err){
-               alert(err);
+
+
+
+               alert(Localization.localize('NAVIGATOR_USER_MEDIA_ERROR'));
             }
          );
       }

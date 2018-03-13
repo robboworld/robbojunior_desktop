@@ -18,7 +18,7 @@ import Record from './Record';
 import Sound from '../../utils/Sound';
 import {frame, gn, localx, newHTML, scaleMultiplier, isTablet, newDiv, newDiv_extended,
     setProps, globalx, localy, globaly, drawScaled, newCanvas,
-    setCanvasSize, hitRect, writeText, getStringSize} from '../../utils/lib';
+    setCanvasSize, hitRect, writeText, getStringSize,css_h} from '../../utils/lib';
 
 
 let blockscale = 0.75;
@@ -123,6 +123,37 @@ export default class Palette {
         var val = ths.owner.getArgValue();
         var list = ScratchJr.getActiveScript().owner.spr.sounds;
         return list.indexOf(val) > 0;
+    }
+
+    static  __robbo__clearPalette(){
+
+        Palette.innerHTML="";   //Clear the palette
+       new_dxblocks = 10;
+
+       Palette.selectCategory(3); //Palette recreate
+
+      }
+
+    static  __robbo__removeSoundExtrenal(sound_name){
+
+
+      console.log("Deleting sound from sound palette: " +  sound_name + " index: " + sound_blocks_arr.indexOf(sound_name));
+
+
+  if (sound_blocks_arr.indexOf(sound_name) !== -1 ){
+
+      sound_blocks_arr.splice(sound_blocks_arr.indexOf(sound_name),1); //delete dound from sounds array
+
+
+
+
+      // Palette.innerHTML="";   //Clear the palette
+      // new_dxblocks = 10;
+      //
+      // Palette.selectCategory(3); //Palette recreate
+
+    }
+
     }
 
 
@@ -468,7 +499,7 @@ export default class Palette {
 
   let ns =   newDiv_extended(pal,dx_blocks,blockdy,null,null,null,null,{class:'addsound',id:"addsound"});
 
-   new_dxblocks = /*dx_blocks +*/  betweenblocks / 2 +  ns.offsetWidth;
+   new_dxblocks = /*dx_blocks +*/  betweenblocks / 2 +  css_h(13); /* ns.getBoundingClientRect().width; */ //ns.offsetWidth;
 
     ns.ontouchstart =  Palette.addSoundToPalette;
     ns.onmousedown =   Palette.addSoundToPalette;

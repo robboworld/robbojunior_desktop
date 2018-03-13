@@ -69,6 +69,10 @@ export default class Library {
 //AZ
       gn('okbut').onmousedown = Library.closeSoundSelection;
 
+      gn('cancelbut').ontouchstart = Library.sound_cancelPick;
+//AZ
+      gn('cancelbut').onmousedown = Library.sound_cancelPick;
+
       gn('library_paintme').style.visibility = 'hidden';
 
       Library.clean();
@@ -174,11 +178,23 @@ export default class Library {
         var okbut = newHTML('div', 'okicon', buttons);
         okbut.setAttribute('id', 'okbut');
         var cancelbut = newHTML('div', 'cancelicon', buttons);
+        cancelbut.setAttribute('id', 'cancelbut');
 
         cancelbut.ontouchstart = Library.cancelPick;
 //AZ
         cancelbut.onmousedown = Library.cancelPick;
     }
+
+    static sound_cancelPick (e) {
+        ScratchJr.onHold = true;
+        Library.close(e);
+        Palette.__robbo__clearPalette();
+
+        setTimeout(function () {
+            ScratchJr.onHold = false;
+        }, 1000);
+    }
+
 
     static cancelPick (e) {
         ScratchJr.onHold = true;
@@ -344,7 +360,7 @@ export default class Library {
         var data = aa;
         var tb = document.createElement('div');
         parent.appendChild(tb);
-      //  tb.byme = nativeJr ? 1 : 0;
+        tb.byme = nativeJr ? 1 : 0;
         var md5 = data.name;
         tb.setAttribute('class', 'assetbox off');
         tb.setAttribute('id', md5);
@@ -365,7 +381,7 @@ export default class Library {
         sound_index_block.style.height = (15 * scale) + 'px'; //15 is random number which is mostly suitable (in my opinion) for for sound_index_block height
         sound_index_block.style.left = (9 * scaleMultiplier) + 'px';
         sound_index_block.style.top = img.style.top + (img.style.height -  ( sound_index_block.style.height + 3)); //top edge of sound_index_block should be placed in the left bottom corner of image element
-                                                                                                                  //3 is a random number for indent  
+                                                                                                                  //3 is a random number for indent
         sound_index_block.style.position = 'relative';
 
         sound_index_block.innerHTML = `<span class="sound_index_block">${sound_index}</span>`;
@@ -566,7 +582,8 @@ export default class Library {
     static selectSoundAsset (e, tb) {
         tb.pt = JSON.stringify(Events.getTargetPoint(e));
         if (shaking && (e.target.className == 'deleteasset')) {
-        //    Library.removeFromAssetList();
+            Library.removeSoundFromLibrary();
+            selectedOne = undefined;
             return;
         } else if (shaking) {
             Library.stopShaking();
@@ -714,6 +731,37 @@ export default class Library {
         }
         shaking = undefined;
     }
+
+    static removeSoundFromLibrary () {
+        ScratchAudio.sndFX('cut.wav');
+        var b = shaking;
+        b.parentNode.removeChild(b);
+
+        var record_name = b.id;
+        var json = {};
+        json.cond = 'record_name = ?';
+        json.items = ['*'];
+        json.values = [record_name];
+        json.order = '';
+        IO.query('sound_records', json, function (results) {
+            results = JSON.parse(results);
+            if (results.length != 0) {
+
+                var json = {};
+                json.values = [record_name];
+                json.stmt = 'delete from sound_records where record_name  = ?';
+                iOS.stmt(json, function () {
+
+                      ScratchAudio.deleteProjectSound(record_name);
+                      Palette.__robbo__removeSoundExtrenal(record_name);
+
+                });
+            }
+        });
+
+        return true;
+    }
+
 
     static removeFromAssetList () {
         ScratchAudio.sndFX('cut.wav');
@@ -912,6 +960,8 @@ export default class Library {
       Palette.addSoundsBlocks(sounds_list);
      }
      Library.close(e);
+
+     Palette.__robbo__clearPalette();
 
    }
 

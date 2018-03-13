@@ -693,6 +693,10 @@ export function colorToRGBA (color, opacity) {
  * here we introduce functioncs (called from the preprocessed css) that emulate their behavior by
  * turning them into pixel values.
  */
+ export function css_h (y) {
+     return (y * WINDOW_INNER_HEIGHT / 100.0);
+ }
+
 export function css_vh (y) {
     return (y * WINDOW_INNER_HEIGHT / 100.0) + 'px';
 }
