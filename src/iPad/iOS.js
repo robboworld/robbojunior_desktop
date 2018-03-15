@@ -216,7 +216,7 @@ if(fcn){
        tabletInterface.createDB = function(tx){
           tx.executeSql('CREATE TABLE IF NOT EXISTS projects  (id INTEGER PRIMARY KEY AUTOINCREMENT, name, json, thumbnail, version, deleted, ctime, mtime, isgift, gallery)');
           tx.executeSql('CREATE TABLE IF NOT EXISTS userbkgs  (id INTEGER PRIMARY KEY AUTOINCREMENT, altmd5, md5, width, height, ext, version, ctime, mtime)');
-          tx.executeSql('CREATE TABLE IF NOT EXISTS usershapes (id INTEGER PRIMARY KEY AUTOINCREMENT, altmd5, md5, width, height, ext, name, scale, version, ctime, mtime)');
+          tx.executeSql('CREATE TABLE IF NOT EXISTS usershapes (id INTEGER PRIMARY KEY AUTOINCREMENT, altmd5, md5, width, height, ext, name,need_flip, scale, version, ctime, mtime)');
 
           tx.executeSql('CREATE TABLE IF NOT EXISTS cookies (id INTEGER PRIMARY KEY, cookie_content)'); //modified_by_Yaroslav
 

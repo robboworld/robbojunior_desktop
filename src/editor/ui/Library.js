@@ -234,7 +234,7 @@ export default class Library {
         var json = {};
         json.cond = 'ext = ? AND version = ?';
         json.items = ((type == 'costumes') ?
-            ['md5', 'altmd5', 'name', 'scale', 'width', 'height'] : ['altmd5', 'md5', 'width', 'height']);
+            ['md5', 'altmd5', 'name', 'scale', 'width', 'height','need_flip'] : ['altmd5', 'md5', 'width', 'height']);
         json.values = ['svg', ScratchJr.version];
         json.order = 'ctime desc';
         IO.query(key, json, Library.displayAssets);
@@ -423,6 +423,7 @@ export default class Library {
         tb.fieldname = data.name;
         tb.w = Number(data.width);
         tb.h = Number(data.height);
+        tb.need_flip = data.need_flip;
         var scale = Math.min(w / tb.w, h / tb.h);
         var img = newHTML('img', undefined, tb);
         img.style.left = (9 * scaleMultiplier) + 'px';
@@ -503,6 +504,7 @@ export default class Library {
         tb.fieldname = data.name;
         tb.w = Number(data.width);
         tb.h = Number(data.height);
+        tb.need_flip = data.need_flip;
 
         var img = newHTML('img', undefined, tb);
         var scale = Math.min(w / tb.w, h / tb.h);
@@ -947,7 +949,7 @@ export default class Library {
         var md5 = selectedOne && (selectedOne != 'none') ? selectedOne : undefined;
         var w = selectedOne && (selectedOne != 'none') ? Math.round(clickThumb.w) : undefined;
         var h = selectedOne && (selectedOne != 'none') ? Math.round(clickThumb.h) : undefined;
-        Paint.open(false, md5, sname, cname, scale, w, h);
+        Paint.open(false, md5, sname, cname, scale, w, h,clickThumb.need_flip);
     }
 
 
@@ -970,7 +972,7 @@ export default class Library {
         e.stopPropagation();
         var id = selectedOne ? clickThumb.fieldname : Localization.localize('LIBRARY_CHARACTER');
         if (selectedOne && (selectedOne != 'none')) {
-            ScratchJr.stage.currentPage.addSprite(clickThumb.scale, selectedOne, id);
+            ScratchJr.stage.currentPage.addSprite(clickThumb.scale, selectedOne, id,clickThumb.need_flip);
         }
 
         // Prevent reporting user asset names

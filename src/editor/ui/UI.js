@@ -1131,7 +1131,7 @@ if (isAndroid){
             return;
         }
         ScratchJr.stopStrips();
-        Paint.open(false, s.md5, s.id, s.name, s.defaultScale, Math.round(s.w), Math.round(s.h));
+        Paint.open(false, s.md5, s.id, s.name, s.defaultScale, Math.round(s.w), Math.round(s.h),s.need_flip);
     }
 
     ///////////////////////////////

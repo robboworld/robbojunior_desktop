@@ -33,13 +33,13 @@ import {newHTML, newDiv, newP, gn,
 export default class Sprite {
     constructor (attr, whenDone) {
         if (attr.type == 'sprite') {
-            this.createSprite(attr.page, attr.md5, attr.id, attr, whenDone);
+            this.createSprite(attr.page, attr.md5, attr.id,attr.need_flip, attr, whenDone);
         } else {
             this.createText(attr, whenDone);
         }
     }
 
-    createSprite (page, md5, id, attr, fcn) {
+    createSprite (page, md5, id,need_flip ,attr, fcn) {
         ScratchJr.storyStart('Sprite.prototype.createSprite');
         this.div = document.createElement('div');
         setProps(this.div.style, {
@@ -55,7 +55,7 @@ export default class Sprite {
         this.borderOn = false;
         this.outline = document.createElement('canvas');
         this.code = new Scripts(this);
-        this.need_flip =  (MediaLib.keys[md5] !== undefined) ? MediaLib.keys[md5].need_flip:false;
+        this.need_flip =  (MediaLib.keys[md5] !== undefined) ? MediaLib.keys[md5].need_flip: ((need_flip == "true")?"true":'false');
         this.need_flip_source = this.need_flip;
         setProps(this, attr);
         if (Localization.isSampleLocalizedKey(this.name) && ScratchJr.isSampleOrStarter()) {
@@ -1222,6 +1222,7 @@ export default class Sprite {
         data.homescale = this.homescale;
         data.homeshown = this.homeshown;
         data.homeflip = this.homeflip;
+        data.need_flip = this.need_flip;
         return data;
     }
 

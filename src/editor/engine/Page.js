@@ -378,7 +378,7 @@ export default class Page {
         }
         data.layers = layers;
 
-        
+
 
 
         return data;
@@ -491,7 +491,7 @@ export default class Page {
         Thumbs.updatePages();
     }
 
-    addSprite (scale, md5, cname) {
+    addSprite (scale, md5, cname,need_flip) {
         ScratchJr.onHold = true;
         var sprAttr = {
             flip: false,
@@ -516,6 +516,7 @@ export default class Page {
         sprAttr.id = getIdFor(cname);
         sprAttr.name = cname;
         sprAttr.md5 = md5;
+        sprAttr.need_flip = need_flip;
         new Sprite(sprAttr, this.spriteAdded);
     }
 
@@ -523,13 +524,14 @@ export default class Page {
         new Sprite(data, this.spriteAdded);
     }
 
-    modifySprite (md5, cid, sid) {
+    modifySprite (md5, cid, sid,need_flip) {
         var sprite = gn(unescape(sid)).owner;
         if (!sprite) {
             sprite = ScratchJr.getSprite();
         }
         sprite.md5 = md5;
         sprite.name = cid;
+        sprite.need_flip = need_flip;
         var me = this;
         sprite.getAsset(gotImage);
         function gotImage (dataurl) {

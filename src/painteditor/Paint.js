@@ -39,6 +39,7 @@ let costumeScale;
 let nativeJr;
 let isBkg = false;
 let currentMd5 = undefined;
+let need_flip;
 let currentZoom = 1;
 let root;
 let saving = false;
@@ -136,6 +137,14 @@ export default class Paint {
         deltaPoint = newDeltaPoint;
     }
 
+    static get need_flip () {
+        return need_flip;
+    }
+
+    static set need_flip (new_need_flip) {
+      need_flip = new_need_flip;
+    }
+
     ///////////////////////////////////////////
     //Opening and Layout
     ///////////////////////////////////////////
@@ -160,7 +169,7 @@ export default class Paint {
         splashshade = 'data:image/svg+xml;base64,' + btoa(str);
     }
 
-    static open (bkg, md5, sname, cname, cscale, sw, sh) {
+    static open (bkg, md5, sname, cname, cscale, sw, sh,need_flip) {
         iOS.analyticsEvent('editor', 'paint_editor_opened', bkg ? 'bkg' : 'character');
         PaintUndo.buffer = [];
         PaintUndo.index = 0;
@@ -176,6 +185,7 @@ export default class Paint {
         spriteId = sname;
         currentName = cname;
         costumeScale = cscale;
+        Paint.need_flip = need_flip;
         SVGTools.init();
         nativeJr = true;
         if (isBkg) {
@@ -1409,7 +1419,7 @@ export default class Paint {
             if ((cname != currentName) && (type == 'modify')) {
                 ScratchJr.stage.currentPage.modifySpriteName(cname, spriteId);
             } else if (currentMd5 && (type == 'add')) {
-                ScratchJr.stage.currentPage.addSprite(costumeScale, currentMd5, cname);
+                ScratchJr.stage.currentPage.addSprite(costumeScale, currentMd5, cname,need_flip);
             }
             Paint.close();
         }
@@ -1456,6 +1466,7 @@ export default class Paint {
         var scale = '0.5'; // always saves with 1/2 the size
         var cname = document.forms.spriteform.name.value;
         cname = ((unescape(cname)).replace(/[0-9]/g, '')).replace(/\s*/g, '');
+      //  var need_flip = (MediaLib.keys[cname.replace("CHARACTER_","")] !== undefined) ? MediaLib.keys[md5].need_flip:false;
         var box = SVGTools.getBox(gn('layer1')).rounded();
         box = box.expandBy(20);
         var w = box.width.toString();
@@ -1465,9 +1476,9 @@ export default class Paint {
         iOS.setmedia(pngBase64, 'png', setCostumeRecord);
         function setCostumeRecord (pngmd5) {
             var json = {};
-            var keylist = ['scale', 'md5', 'altmd5', 'version', 'width', 'height', 'ext', 'name'];
-            var values = '?,?,?,?,?,?,?,?';
-            json.values = [scale, saveMD5, pngmd5, ScratchJr.version, w, h, 'svg', cname];
+            var keylist = ['scale', 'md5', 'altmd5', 'version', 'width', 'height', 'ext', 'name','need_flip'];
+            var values = '?,?,?,?,?,?,?,?,?';
+            json.values = [scale, saveMD5, pngmd5, ScratchJr.version, w, h, 'svg', cname,Paint.need_flip];
             json.stmt = 'insert into usershapes (' + keylist.toString() + ') values (' + values + ')';
             iOS.stmt(json, fcn);
         }
@@ -1479,10 +1490,10 @@ export default class Paint {
         var type = Paint.getLoadType(spriteId, cname);
         switch (type) {
         case 'modify':
-            ScratchJr.stage.currentPage.modifySprite(saveMD5, cname, spriteId);
+            ScratchJr.stage.currentPage.modifySprite(saveMD5, cname, spriteId,need_flip);
             break;
         case 'add':
-            ScratchJr.stage.currentPage.addSprite(costumeScale, saveMD5, cname);
+            ScratchJr.stage.currentPage.addSprite(costumeScale, saveMD5, cname,need_flip);
             break;
         default:
             ScratchJr.stage.currentPage.update();
