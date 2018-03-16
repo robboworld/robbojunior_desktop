@@ -13,6 +13,8 @@
 
 {"md5":"lake.svg","width":480,"height":360,"ext":"svg","name":"lake"},
 
+{"md5":"lake2.svg","width":480,"height":360,"ext":"svg","name":"lake2"},
+
 {"md5":"snow.svg","width":480,"height":360,"ext":"svg","name":"snow"},
 
 {"md5":"field.svg","width":480,"height":360,"ext":"svg","name":"field"},
@@ -45,11 +47,19 @@
 
 {"md5":"park.svg","width":480,"height":360,"ext":"svg","name":"park"},
 
+{"md5":"park3.svg","width":480,"height":360,"ext":"svg","name":"park3"},
+
 {"md5":"road.svg","width":480,"height":360,"ext":"svg","name":"road"},
 
 {"md5":"sky.svg","width":480,"height":360,"ext":"svg","name":"sky"},
 
 {"md5":"theatre.svg","width":480,"height":360,"ext":"svg","name":"theatre"},
+
+{"md5":"fall.svg","width":480,"height":360,"ext":"svg","name":"fall"},
+
+{"md5":"creek.svg","width":480,"height":360,"ext":"svg","name":"creek"},
+
+{"md5":"city.svg","width":480,"height":360,"ext":"svg","name":"city"},
 
 {"md5":"autumn.svg","width":480,"height":360,"ext":"svg","name":"autumn"}
 
@@ -88,6 +98,8 @@
 
 
 {"md5":"cloud.svg","width":240,"height":159,"ext":"svg","name":"cloud","need_flip":"false","order":"characters,02 space","tags":["characters","02 space"]},
+
+{"md5":"cloud2.svg","width":238,"height":149,"ext":"svg","name":"cloud2","need_flip":"false","order":"characters,02 space","tags":["characters","02 space"]},
 
 {"md5":"planet2.svg","width":118,"height":114,"ext":"svg","name":"planet2","need_flip":"false","order":"characters,02 space","tags":["characters","02 space"]},
 
@@ -128,6 +140,16 @@
 {"md5":"car2.svg","width":382,"height":147,"ext":"svg","name":"car2","need_flip":"true","order":"characters,05 transport","tags":["characters","05 transport"]},
 
 {"md5":"car3.svg","width":371,"height":164,"ext":"svg","name":"car3","need_flip":"true","order":"characters,05 transport","tags":["characters","05 transport"]},
+
+{"md5":"car4.svg","width":534,"height":220,"ext":"svg","name":"car4","need_flip":"false","order":"characters,05 transport","tags":["characters","05 transport"]},
+
+{"md5":"car5.svg","width":638,"height":415,"ext":"svg","name":"car5","need_flip":"false","order":"characters,05 transport","tags":["characters","05 transport"]},
+
+{"md5":"car6.svg","width":640,"height":415,"ext":"svg","name":"car6","need_flip":"false","order":"characters,05 transport","tags":["characters","05 transport"]},
+
+{"md5":"bus.svg","width":600,"height":319,"ext":"svg","name":"bus","need_flip":"false","order":"characters,05 transport","tags":["characters","05 transport"]},
+
+{"md5":"aeroplane.svg","width":570,"height":394,"ext":"svg","name":"aeroplane","need_flip":"false","order":"characters,05 transport","tags":["characters","05 transport"]},
 
 {"md5":"tractor.svg","width":302,"height":258,"ext":"svg","name":"tractor","order":"characters,05 transport","tags":["characters","05 transport"]},
 
@@ -172,11 +194,21 @@
 
 {"md5":"tree.svg","width":246,"height":374,"ext":"svg","name":"tree","order":"characters,07 plants","tags":["characters","07 plants"]},
 
+{"md5":"daisy1.svg","width":95,"height":78,"ext":"svg","name":"daisy1","order":"characters,07 plants","tags":["characters","07 plants"]},
+
+{"md5":"daisy2.svg","width":91,"height":81,"ext":"svg","name":"daisy2","order":"characters,07 plants","tags":["characters","07 plants"]},
+
+{"md5":"daisy3.svg","width":77,"height":98,"ext":"svg","name":"daisy3","order":"characters,07 plants","tags":["characters","07 plants"]},
+
+{"md5":"flowers.svg","width":197,"height":119,"ext":"svg","name":"flowers","order":"characters,07 plants","tags":["characters","07 plants"]},
+
 
 
 {"md5":"ant.svg","width":296,"height":286,"ext":"svg","name":"ant","need_flip":"true","order":"characters,08 insects","tags":["characters","08 insects"]},
 
-{"md5":"baterfly.svg","width":316,"height":284,"ext":"svg","name":"baterfly","need_flip":"true","order":"characters,08 insects","tags":["characters","08 insects"]},
+{"md5":"baterfly.svg","width":316,"height":284,"ext":"svg","name":"butterfly","need_flip":"true","order":"characters,08 insects","tags":["characters","08 insects"]},
+
+{"md5":"butterfly2.svg","width":128,"height":97,"ext":"svg","name":"butterfly2","need_flip":"false","order":"characters,08 insects","tags":["characters","08 insects"]},
 
 {"md5":"bee.svg","width":229,"height":249,"ext":"svg","name":"bee","order":"characters,08 insects","tags":["characters","08 insects"]},
 
@@ -208,6 +240,8 @@
 
 {"md5":"horse.svg","width":337,"height":337,"ext":"svg","name":"horse","need_flip":"true","order":"characters,09 farm","tags":["characters","09 farm"]},
 
+{"md5":"horse2.svg","width":422,"height":417,"ext":"svg","name":"horse2","need_flip":"false","order":"characters,09 farm","tags":["characters","09 farm"]},
+
 {"md5":"pig.svg","width":287,"height":251,"ext":"svg","name":"pig","need_flip":"true","order":"characters,09 farm","tags":["characters","09 farm"]},
 
 {"md5":"littlepig.svg","width":125,"height":106,"ext":"svg","name":"littlepig","need_flip":"true","order":"characters,09 farm","tags":["characters","09 farm"]},
@@ -228,6 +262,13 @@
 
 {"md5":"child12.svg","width":186,"height":329,"ext":"svg","name":"child12","order":"characters,10 people","tags":["characters","10 people"]},
 
+{"md5":"boy.svg","width":134,"height":319,"ext":"svg","name":"boy","order":"characters,10 people","tags":["characters","10 people"]},
+
+{"md5":"girl.svg","width":156,"height":309,"ext":"svg","name":"girl","order":"characters,10 people","tags":["characters","10 people"]},
+
+{"md5":"wizard.svg","width":411,"height":443,"ext":"svg","name":"wizard","order":"characters,10 people","tags":["characters","10 people"]},
+
+
 
 
 {"md5":"bird.svg","width":86,"height":74,"ext":"svg","name":"bird","order":"characters,11 wild","tags":["characters","11 wild"]},
@@ -237,6 +278,8 @@
 {"md5":"elefant.svg","width":130,"height":91,"ext":"svg","name":"elefant","need_flip":"true","order":"characters,11 wild","tags":["characters","11 wild"]},
 
 {"md5":"frog.svg","width":259,"height":271,"ext":"svg","name":"frog","need_flip":"true","order":"characters,11 wild","tags":["characters","11 wild"]},
+
+{"md5":"frog2.svg","width":195,"height":166,"ext":"svg","name":"frog2","need_flip":"true","order":"characters,11 wild","tags":["characters","11 wild"]},
 
 {"md5":"giraffe.svg","width":99,"height":139,"ext":"svg","name":"giraffe","order":"characters,11 wild","tags":["characters","11 wild"]},
 
@@ -259,6 +302,9 @@
 {"md5":"dinosaur3.svg","width":144,"height":104,"ext":"svg","name":"dinosaur3","order":"characters,12 dinosaurs","tags":["characters","12 dinosaurs"]},
 
 {"md5":"dinosaur4.svg","width":141,"height":121,"ext":"svg","name":"dinosaur4","need_flip":"true","order":"characters,12 dinosaurs","tags":["characters","12 dinosaurs"]},
+
+
+{"md5":"dragon.svg","width":577,"height":532,"ext":"svg","name":"dragon","need_flip":"false","order":"characters,13 dragons","tags":["characters","13 dragons"]},
 
 
 {"md5":"ABC hand drawn 1.svg","width":100,"height":200,"ext":"svg","name":"ABC hand drawn 1","order":"characters,14 ABC_hand_drawn","tags":["characters","14 ABC_hand_drawn"]},
