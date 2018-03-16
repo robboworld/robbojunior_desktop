@@ -56,7 +56,7 @@ Bug fixed:
 1.  Fixed an error with sound blocks name. Now we can load a project despite we have an incorrect block name. 
 
 
-Version 0.0.8 (On state: 16/02/2017)
+Version 0.0.8 (On state: 16/02/2018)
 
 
 Bug fixed:
@@ -66,4 +66,23 @@ Bug fixed:
 New features:
 
 1. Now users can save their records in .sjr files. 
+
+
+
+Version 0.0.9 (On state: 16/03/2018)
+
+
+Bug fixed:
+
+1. Fixed the error caused by trying to record without the microphone.
+
+2.  Error message about accessing the microphone was corrected.
+
+3. "Sprites back moving" error caused by sprites repaint was corrected. 
+
+New features:
+
+1. Now users can delete their records from sounds' palette. 
+2. Now users can delete their records from sounds' library.
+3. Sound numbers were  added to sounds' library.
 
