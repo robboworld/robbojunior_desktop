@@ -594,7 +594,7 @@ if(fcn){
             function(err){
 
 
-
+               tabletInterface.record.record_start_time = Date.now();
                alert(Localization.localize('NAVIGATOR_USER_MEDIA_ERROR'));
             }
          );
