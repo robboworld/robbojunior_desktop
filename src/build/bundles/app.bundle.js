@@ -6785,6 +6785,20 @@
 	               tx.executeSql('CREATE TABLE IF NOT EXISTS cookies (id INTEGER PRIMARY KEY, cookie_content)'); //modified_by_Yaroslav
 	
 	               tx.executeSql('CREATE TABLE IF NOT EXISTS sound_records (id INTEGER PRIMARY KEY AUTOINCREMENT , record_name,record_duration)'); //modified_by_Yaroslav
+	
+	               tx.executeSql('SELECT sql FROM sqlite_master WHERE type = "table" AND name = "usershapes"', [], function (tx, results) {
+	
+	                  if (results.rows[0].sql.indexOf("need_flip") == -1) {
+	
+	                     tx.executeSql('ALTER TABLE "usershapes" ADD COLUMN "need_flip" TEXT', [], function (tx, results) {}, function (tx, error) {
+	
+	                        console.log("ALTER TABLE 'usershapes' error: " + error.message);
+	                     });
+	                  }
+	               }, function (tx, error) {
+	
+	                  console.log("PRAGMA table_info error: " + error.message);
+	               });
 	            };
 	
 	            tabletInterface.database_query = function (dbCommand, callback) {
@@ -7159,6 +7173,7 @@
 	                  }
 	               }, function (err) {
 	
+	                  tabletInterface.record.record_start_time = Date.now();
 	                  alert(_Localization2.default.localize('NAVIGATOR_USER_MEDIA_ERROR'));
 	               });
 	            };
