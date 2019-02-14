@@ -126,8 +126,8 @@ export default class Page {
             return;
         }
         var me = this;
-        var url = (MediaLib.keys[name]) ? MediaLib.path + name : (name.indexOf('/') < 0) ? iOS.path + name : name;
-        var md5 = (MediaLib.keys[name]) ? MediaLib.path + name : name;
+        var url = ((MediaLib.keys[name]) && (name.indexOf('_custom') < 0)) ? MediaLib.path + name : (name.indexOf('/') < 0) ? iOS.path + name : name; //modified_by_Yaroslav
+        var md5 = ((MediaLib.keys[name]) && (name.indexOf('_custom') < 0)) ? MediaLib.path + name : name;
 
         if (md5.substr(md5.length - 3) == 'png') {
             this.setBackgroundImage(url, fcn);
@@ -138,6 +138,14 @@ export default class Page {
         if (md5.indexOf('/') > -1) {
             IO.requestFromServer(md5, doNext);
         } else {
+
+          if (md5.indexOf('_custom') != -1)
+          {
+
+            md5 = md5.replace("_custom","");
+
+          }
+
             iOS.getmedia(md5, nextStep);
         }
         function nextStep (base64) {

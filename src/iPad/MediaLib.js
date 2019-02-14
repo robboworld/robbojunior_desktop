@@ -38,6 +38,14 @@ export default class MediaLib {
         return keys;
     }
 
+    static set sprites (data) {
+        sprites = data;
+    }
+
+    static set backgrounds (data) {
+        backgrounds = data;
+    }
+
     static loadMediaLib (root, whenDone) {
         IO.requestFromServer(root + 'media.json', (result) => {
             let parsedResult = JSON.parse(result);
@@ -54,10 +62,118 @@ export default class MediaLib {
           }
 
 
-            MediaLib.localizeMediaNames();
-            MediaLib.generateKeys();
+          var json = {};
+           json.items = ['*'];
 
-            whenDone();
+
+        var query_custom_bkgs = function(cb){
+
+          IO.query('custombkgs', json, (results) => {
+
+                  results = JSON.parse(results);
+
+                    if (results.length != 0) {
+
+                  //  let obj =  Object.assign(sprites, results);
+
+                  let length = backgrounds.length;
+
+                    for (let i = 0; i < results.length; i++) {
+
+                        backgrounds[length + i] = results[i];
+
+                        backgrounds[length + i].md5 = backgrounds[length + i].md5 + "_custom" + "." + backgrounds[length + i].ext;
+                        backgrounds[length + i].altmd5 = backgrounds[length + i].altmd5 + "_custom" + "." + backgrounds[length + i].ext;
+
+
+                        console.log(`adding custom background ${backgrounds[length + i].md5}`);
+
+                    }
+
+
+
+
+
+
+                    //  cb();
+
+                      MediaLib.localizeMediaNames();
+                      MediaLib.generateKeys();
+
+                      whenDone();
+
+                    }else{
+
+                  //    cb();
+
+                      MediaLib.localizeMediaNames();
+                      MediaLib.generateKeys();
+
+                      whenDone();
+
+
+                    }
+
+            });
+
+
+
+        }
+
+
+        IO.query('customsprites', json, (results) => {
+
+                results = JSON.parse(results);
+
+                  if (results.length != 0) {
+
+                //  let obj =  Object.assign(sprites, results);
+
+                let length = sprites.length;
+
+                  for (let i = 0; i < results.length; i++) {
+
+                      sprites[length + i] = results[i];
+
+                      sprites[length + i].md5 = sprites[length + i].md5 + "_custom" + "." + sprites[length + i].ext;
+                      sprites[length + i].altmd5 = sprites[length + i].altmd5 + "_custom" + "." + sprites[length + i].ext;
+
+
+                      console.log(`adding custom sprite ${sprites[length + i].md5}`);
+
+                  }
+
+
+                  query_custom_bkgs();
+
+
+
+
+
+                    // MediaLib.localizeMediaNames();
+                    // MediaLib.generateKeys();
+                    //
+                    // whenDone();
+
+                  }else{
+
+                    query_custom_bkgs();
+
+                    // MediaLib.localizeMediaNames();
+                    // MediaLib.generateKeys();
+                    //
+                    // whenDone();
+
+
+                  }
+
+          });
+
+
+            // MediaLib.localizeMediaNames();
+            // MediaLib.generateKeys();
+            //
+            // whenDone();
         });
     }
 

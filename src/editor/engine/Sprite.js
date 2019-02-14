@@ -79,11 +79,17 @@ export default class Sprite {
     getAsset (whenDone) {
         var md5 = this.md5;
         var spr = this;
-        var url = (MediaLib.keys[md5]) ? MediaLib.path + md5 : (md5.indexOf('/') < 0) ? iOS.path + md5 : md5;
-        md5 = (MediaLib.keys[md5]) ? MediaLib.path + md5 : md5;
+        var url = ((MediaLib.keys[md5]) && (md5.indexOf('_custom') < 0) ) ? MediaLib.path + md5 : (md5.indexOf('/') < 0) ? iOS.path + md5 : md5;  //modified_by_Yaroslav
+        md5 = ((MediaLib.keys[md5]) && (md5.indexOf('_custom') < 0)) ? MediaLib.path + md5 : md5;
         if (md5.indexOf('/') > -1) {
             IO.requestFromServer(md5, doNext);
         } else {
+            if (md5.indexOf('_custom') != -1)
+            {
+
+              md5 = md5.replace("_custom","");
+          
+            }
             iOS.getmedia(md5, nextStep);
         }
         function nextStep (base64) {

@@ -85,7 +85,7 @@ export default class IO {
     // This code avoids that bug
     // also when in debug mode you need to get the base64 to avoid sandboxing issues
     static getAsset (md5, fcn) { // returns either a link or a base64 dataurl
-        if (MediaLib.keys[md5]) {
+        if ((MediaLib.keys[md5]) && (md5.indexOf('_custom') < 0)) {  //modified_by_Yaroslav
             fcn(MediaLib.path + md5); return;
         } // just url link assets do not have photos
         if (md5.indexOf('/') > -1) {
@@ -95,6 +95,13 @@ export default class IO {
         if ((IO.getExtension(md5) == 'png') && iOS.path) {
             fcn(iOS.path + md5); // only if it is not in debug mode
         } else {
+
+          if (md5.indexOf('_custom') != -1)
+          {
+
+            md5 = md5.replace("_custom","");
+
+          }
             iOS.getmedia(md5, nextStep);
         } // get url contents
 
@@ -225,11 +232,19 @@ export default class IO {
     }
 
     static query (type, obj, fcn) {
+
         var json = {};
         json.stmt = 'select ' + obj.items + ' from ' + type +
-            ' where ' + obj.cond + (obj.order ? ' order by ' + obj.order : '');
-        json.values = obj.values;
+            (obj.cond ? ' where ' + obj.cond : '')  + (obj.order ? ' order by ' + obj.order : '');
+        json.values = obj.values || [];
         iOS.query(json, fcn);
+
+
+      // var json = {};
+      // json.stmt = 'select ' + obj.items + ' from ' + type +
+      //     ' where ' + obj.cond + (obj.order ? ' order by ' + obj.order : '');
+      // json.values = obj.values;
+      // iOS.query(json, fcn);
     }
 
     static deleteobject (type, id, fcn) {

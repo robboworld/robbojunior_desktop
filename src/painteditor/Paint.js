@@ -1291,8 +1291,14 @@ export default class Paint {
         if (md5.indexOf('samples/') >= 0) {
             // Load sample asset
             Paint.loadChar(md5);
-        } else if (!MediaLib.keys[md5]) {
+        } else if ( (!MediaLib.keys[md5]) || (md5.indexOf('_custom') != -1)  ) { //modified_by_Yaroslav
             // Load user asset
+            if (md5.indexOf('_custom') != -1)
+            {
+
+              md5 = md5.replace("_custom","");
+
+            }
             iOS.getmedia(md5, nextStep);
         } else {
             // Load library asset

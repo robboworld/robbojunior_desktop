@@ -148,6 +148,21 @@ export function newImage (parent, src, styles) {
     return img;
 }
 
+export function newImage_extended (parent, src, styles,c) { //modified_by_Yaroslav
+    var img = document.createElement('img');
+    img.src = src;
+    setProps(img.style, styles);
+
+    if (c) {
+        img.setAttribute('class', c);
+    }
+
+    if (parent) {
+        parent.appendChild(img);
+    }
+    return img;
+}
+
 export function newCanvas (parent, x, y, w, h, styles) {
     var canvas = document.createElement('canvas');
     canvas.style.position = 'absolute';

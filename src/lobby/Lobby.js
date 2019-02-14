@@ -2,7 +2,7 @@
 // Home Screen
 //////////////////////////////////////////////////
 
-import {libInit, getUrlVars, gn, isAndroid, newHTML} from '../utils/lib';
+import {libInit, getUrlVars, gn, isAndroid, newHTML,newImage_extended} from '../utils/lib';
 import ScratchAudio from '../utils/ScratchAudio';
 import iOS from '../iPad/iOS';
 import Localization from '../utils/Localization';
@@ -119,6 +119,18 @@ export default class Lobby {
 //AZ
         gn('project_load').onmousedown = gn('project_load').ontouchstart;
 
+
+        //modified_by_Yaroslav //sprite upload button
+//         gn('sprite_upload').ontouchstart = UI.uploadSpriteFromDisk;
+// //AZ
+//         gn('sprite_upload').onmousedown = gn('sprite_upload').ontouchstart;
+//
+//         //modified_by_Yaroslav //background upload button
+//         gn('bkg_upload').ontouchstart = UI.uploadBackgroundFromDisk;
+// //AZ
+//         gn('bkg_upload').onmousedown = gn('bkg_upload').ontouchstart;
+
+
         if (isAndroid) {
             AndroidInterface.notifyDoneLoading();
         }
@@ -171,6 +183,145 @@ export default class Lobby {
         currentPage = page;
     }
 
+    static progressShowing (div,str) {
+
+        // var wc = gn('wrapc');
+        // while (wc.childElementCount > 0) {
+        //     wc.removeChild(wc.childNodes[0]);
+        // }
+        // var div = newHTML('div', 'htmlcontents', wc);
+        // div.setAttribute('id', 'htmlcontents');
+
+
+        var ht = newHTML('div', 'progress-ballon', div);
+        var h = newHTML('h1', undefined, ht);
+        h.setAttribute('id', 'progress-ballon-text');
+        h.textContent = str;
+
+          var error_area = gn('error_area');
+          error_area.innerHTML = "";
+
+    }
+
+    static updateProgress(obj){
+
+          var error_text = "";
+          var error_code = 0;
+          var uploaded_assets = 0;
+
+          if (typeof(obj) != 'undefined'){
+
+            if (typeof(obj.error) != 'undefined'){
+
+              if (typeof(obj.error.err_code) != 'undefined'){
+
+                if (obj.error.err_code == 0){
+
+                      if (typeof(obj.uploaded_assets) != 'undefined'){
+
+                          uploaded_assets = obj.uploaded_assets;
+                           error_text = "";
+                      }
+
+                }else{
+
+                    error_code = obj.error.err_code;
+                    error_text = "Error: " + obj.error.err_message + " Error code: " + error_code + " ";
+
+                    if (typeof(obj.error.file_name) != 'undefined'){
+
+                        error_text = error_text + `File name: ${obj.error.file_name}`
+
+                    }
+
+                }
+
+                var text = gn('progress-ballon-text');
+                text.textContent =  /*error_text +  */'Files uploaded: ' +  uploaded_assets;
+
+                var error_area = gn('error_area');
+
+                var error_msg = newHTML('div', 'error-msg', error_area);
+                error_msg.textContent = error_text;
+
+
+
+              }
+            }
+
+          }
+
+
+
+    }
+
+    static createSpriteBgLoadPage(){
+
+          console.log("createSpriteBgLoadPage");
+
+          document.documentElement.scrollTop = 0;
+          var div = gn('wrapc');
+          while (div.childElementCount > 0) {
+              div.removeChild(div.childNodes[0]);
+          }
+
+         // div = newHTML('div', 'sprite-bkgs-load-page', div);
+        //  div.setAttribute('id', 'sprite-bkgs-load-page');
+
+           div = newHTML('div', 'htmlcontents sprite-bkgs-load-page', div);
+          div.setAttribute('id', 'htmlcontents');
+
+          var title = newHTML('h1', 'upload-image-title', div);
+
+        //  title.textContent = Localization.localize('SELECT_LANGUAGE'); // TODO: localization
+
+          title.textContent = "Загрузка спрайтов и бэкграундов";
+
+          var buttons = newHTML('div', 'upload-image-buttons', div);
+
+          var spriteLoadButton = newHTML('div', 'upload-image-button', buttons);
+          spriteLoadButton.setAttribute('id', 'sprite_upload');
+
+          spriteLoadButton.textContent = 'Upload sprites';  // TODO: localization
+
+          spriteLoadButton.ontouchstart = function (e) {
+              ScratchAudio.sndFX('tap.wav');
+
+              Lobby.progressShowing(div,"");
+               UI.uploadSpriteFromDisk(Lobby.updateProgress);
+
+          };
+          spriteLoadButton.onmousedown = spriteLoadButton.ontouchstart;
+
+
+          var bkgLoadButton = newHTML('div', 'upload-image-button', buttons);
+          bkgLoadButton.setAttribute('id', 'bkg_upload');
+
+          bkgLoadButton.textContent = 'Upload bkgs'; // TODO: localization
+
+          bkgLoadButton.ontouchstart = function (e) {
+              ScratchAudio.sndFX('tap.wav');
+
+              Lobby.progressShowing(div,"");
+               UI.uploadBackgroundFromDisk(Lobby.updateProgress);
+
+          };
+          bkgLoadButton.onmousedown = bkgLoadButton.ontouchstart;
+
+
+          var arrow_image = newImage_extended(div,'assets/lobby/back-to-home-arrow.svg',{},'back-to-home-arrow'); //modified_by_Yaroslav
+
+           arrow_image.ontouchstart =  Lobby.setPage.bind(this,'gear');;
+
+          arrow_image.onmousedown = arrow_image.ontouchstart;
+
+
+          var error_area = newHTML('div', 'error-area', div);
+          error_area.setAttribute('id', 'error_area');
+
+
+    }
+
     static loadProjects (p) {
         document.ontouchmove = undefined;
         gn('topsection').className = 'topsection home';
@@ -181,6 +332,14 @@ export default class Lobby {
         gn('wrapc').className = 'contentwrap scroll';
         var div = newHTML('div', 'htmlcontents home', p);
         div.setAttribute('id', 'htmlcontents');
+
+        // var arrow_image = newImage_extended(div,'assets/lobby/navigation-arrow.svg',{},'arrow-image'); //modified_by_Yaroslav
+        //
+        //  arrow_image.ontouchstart = Lobby.createSpriteBgLoadPage;
+        //
+        // arrow_image.onmousedown = arrow_image.ontouchstart;
+
+
         Home.init();
     }
 
@@ -217,6 +376,12 @@ export default class Lobby {
         gn('wrapc').className = 'contentwrap scroll';
         var div = newHTML('div', 'htmlcontents settings', p);
         div.setAttribute('id', 'htmlcontents');
+
+        var arrow_image = newImage_extended(div,'assets/lobby/navigation-arrow.svg',{},'arrow-image'); //modified_by_Yaroslav
+
+         arrow_image.ontouchstart = Lobby.createSpriteBgLoadPage;
+
+        arrow_image.onmousedown = arrow_image.ontouchstart;
 
         // Localization settings
         var title = newHTML('h1', 'localizationtitle', div);

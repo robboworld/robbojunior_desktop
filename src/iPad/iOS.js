@@ -218,12 +218,15 @@ if(fcn){
           tx.executeSql('CREATE TABLE IF NOT EXISTS userbkgs  (id INTEGER PRIMARY KEY AUTOINCREMENT, altmd5, md5, width, height, ext, version, ctime, mtime)');
           tx.executeSql('CREATE TABLE IF NOT EXISTS usershapes (id INTEGER PRIMARY KEY AUTOINCREMENT, altmd5, md5, width, height, ext, name,need_flip, scale, version, ctime, mtime)');
 
-
-
-
           tx.executeSql('CREATE TABLE IF NOT EXISTS cookies (id INTEGER PRIMARY KEY, cookie_content)'); //modified_by_Yaroslav
 
           tx.executeSql('CREATE TABLE IF NOT EXISTS sound_records (id INTEGER PRIMARY KEY AUTOINCREMENT , record_name,record_duration)'); //modified_by_Yaroslav
+
+          //for sprites upload //modified_by_Yaroslav
+          tx.executeSql('CREATE TABLE IF NOT EXISTS customsprites (id INTEGER PRIMARY KEY AUTOINCREMENT, altmd5, md5, width, height, ext, name,need_flip,sprites_order, tags, scale, version, ctime, mtime)',[],() => {},(a,error) => {console.error("Table custom sprites creation error: " + error.code + " " + error.message)});
+
+          //for backgrounds upload //modified_by_Yaroslav
+          tx.executeSql('CREATE TABLE IF NOT EXISTS custombkgs (id INTEGER PRIMARY KEY AUTOINCREMENT, altmd5, md5, width, height, ext, name,bkgs_order, tags, scale, version, ctime, mtime)',[],() => {},(a,error) => {console.error("Table custom backgrounds creation error: " + error.code + " " + error.message)});
 
           tx.executeSql('SELECT sql FROM sqlite_master WHERE type = "table" AND name = "usershapes"',[], function (tx,results){
 
@@ -319,7 +322,11 @@ if(fcn){
 
           db.transaction(function (tx) {
              tabletInterface.createDB(tx);
-             tx.executeSql(objCommand.stmt, objCommand.values);
+
+             tx.executeSql(objCommand.stmt, objCommand.values,() => {},(sql_tx,error) => {
+
+                console.error(`Database error code: ${error.code} message: ${error.message}`);
+             });
 
              tx.executeSql("SELECT last_insert_rowid() as last_id", [], function (tx, results) {
 
@@ -441,8 +448,65 @@ if(fcn){
        }
 
 
-       tabletInterface.io_remove  = function(name){
+       tabletInterface.io_remove  = function(name,cb){
           console.log("io_remove =" + name);
+
+
+            var error_object = {err_msg:"",err_code:0};
+
+            var result_object = {error:error_object};
+
+
+          var  errorHandler = function(e){
+             console.error("File error during removing: " + e);
+
+             if (cb){
+
+               error_object.err_msg = "File error during removing: " + e;
+               error_object.err_code = 1;
+
+               result_object.error = error_object;
+
+               cb(result_object);
+
+             }
+
+
+
+          };
+
+    var _onInitFs = function(fs){
+
+         fs.root.getFile(name, {create: false}, function(fileEntry) {
+
+           fileEntry.remove(() => {
+
+                console.log(`File ${name} was removed.`);
+
+
+                   if (cb){
+
+                     error_object.err_msg = "";
+                     error_object.err_code = 0;
+
+                     result_object.error = error_object;
+
+                     cb(result_object);
+
+                   }
+
+              }, errorHandler);
+
+      }, errorHandler);
+
+    }
+
+
+    navigator.webkitPersistentStorage.requestQuota(50*1024*1024,
+       function(grantedBytes){
+    //      console.log("byte granted=" + grantedBytes);
+          window.webkitRequestFileSystem(PERSISTENT, grantedBytes, _onInitFs, errorHandler);
+       }, errorHandler);
        }
 
 
@@ -482,7 +546,7 @@ if(fcn){
                    var reader = new FileReader();
 
                    reader.onloadend = function(e) {
-                      console.log("Read completed for " + sFile + ". length=" + this.result.length);
+                      console.log("Read completed for " + sFile + " length=" + this.result.length);
                       callback(this.result);
                    };
 
@@ -970,6 +1034,8 @@ if(fcn){
 //AZ let's push the call back if we are not in the tablet
         var result;
 
+
+
         if(isTablet){
            result = tabletInterface.database_stmt(JSON.stringify(json));
            if (typeof (fcn) !== 'undefined') {
@@ -984,6 +1050,125 @@ if(fcn){
     static query (json, fcn) {
 //AZ let's push the call back if we are not in the tablet
         var result;
+
+
+        if (tabletInterface == null){
+
+          String.prototype.replaceAll = function(search, replacement) {
+             var target = this;
+             return target.replace(new RegExp(search, 'g'), replacement);
+          };
+
+            tabletInterface = {};
+
+            tabletInterface.createDB = function(tx){
+               tx.executeSql('CREATE TABLE IF NOT EXISTS projects  (id INTEGER PRIMARY KEY AUTOINCREMENT, name, json, thumbnail, version, deleted, ctime, mtime, isgift, gallery)');
+               tx.executeSql('CREATE TABLE IF NOT EXISTS userbkgs  (id INTEGER PRIMARY KEY AUTOINCREMENT, altmd5, md5, width, height, ext, version, ctime, mtime)');
+               tx.executeSql('CREATE TABLE IF NOT EXISTS usershapes (id INTEGER PRIMARY KEY AUTOINCREMENT, altmd5, md5, width, height, ext, name,need_flip, scale, version, ctime, mtime)');
+
+               //for sprites upload //modified_by_Yaroslav
+              tx.executeSql('CREATE TABLE IF NOT EXISTS customsprites (id INTEGER PRIMARY KEY AUTOINCREMENT, altmd5, md5, width, height, ext, name,need_flip,sprites_order, tags, scale, version, ctime, mtime)',[],() => {},(a,error) => {console.error("Table custom sprites creation error: " + error.code + " " + error.message)});
+
+              //for backgrounds upload //modified_by_Yaroslav
+              tx.executeSql('CREATE TABLE IF NOT EXISTS custombkgs (id INTEGER PRIMARY KEY AUTOINCREMENT, altmd5, md5, width, height, ext, name,bkgs_order, tags, scale, version, ctime, mtime)',[],() => {},(a,error) => {console.error("Table custom backgrounds creation error: " + error.code + " " + error.message)});
+
+               tx.executeSql('CREATE TABLE IF NOT EXISTS cookies (id INTEGER PRIMARY KEY, cookie_content)'); //modified_by_Yaroslav
+
+               tx.executeSql('CREATE TABLE IF NOT EXISTS sound_records (id INTEGER PRIMARY KEY AUTOINCREMENT , record_name,record_duration)'); //modified_by_Yaroslav
+
+               tx.executeSql('SELECT sql FROM sqlite_master WHERE type = "table" AND name = "usershapes"',[], function (tx,results){
+
+
+                   if (results.rows[0].sql.indexOf("need_flip") == -1){
+
+
+                         tx.executeSql('ALTER TABLE "usershapes" ADD COLUMN "need_flip" TEXT',[], function(tx, results){
+
+
+
+                         },
+
+                         function(tx,error){
+
+                               console.log("ALTER TABLE 'usershapes' error: " + error.message);
+
+
+                         }
+
+
+
+                         );
+
+                   }
+
+               },
+
+                   function (tx,error){
+
+                       console.log("PRAGMA table_info error: " + error.message);
+
+                   }
+             );
+
+            }
+
+
+            tabletInterface.database_query = function(dbCommand, callback){
+               console.log("db=" + dbCommand);
+
+               var objCommand = JSON.parse(dbCommand);
+
+               var db = openDatabase('jr', '1.0', 'Scratch Junior', 2 * 1024 * 1024);
+
+
+                  db.transaction(function (tx) {
+                     tabletInterface.createDB(tx);
+
+                  //   console.log("query::database_query1")
+
+
+                     tx.executeSql(objCommand.stmt, objCommand.values, function (tx, results) {
+
+              //   tx.executeSql('SELECT * FROM customsprites', [], function (tx, results) {
+
+                    //   console.log("query::database_query")
+
+                        var len = results.rows.length, i;
+
+                        var result = "[";
+                        for (i = 0; i < len; i++){
+                           var tmp = "";
+                           for (var property in results.rows.item(i)) {
+                              if (results.rows.item(i).hasOwnProperty(property)) {
+                                 if( (results.rows.item(i)[property])/* && (results.rows.item(i)[property] !== null) && (property != "id")*/ ){
+                                    if(tmp != "") tmp += ',';
+                                    tmp += '"' + property + '":"' + ("" + results.rows.item(i)[property]).replaceAll('"','\\"') + '"';
+                                 }
+                                 else{
+                                    //null at the db
+                                 }
+                              }
+                           }
+                           result += "{" + tmp + "}";
+
+                           if(i + 1 < len){
+                              result += ',';
+                           }
+                         }
+                        result += "]";
+
+                        console.log(result);
+
+
+                        if (typeof (callback) !== 'undefined') {
+                           callback(result);
+                        }
+
+                     }, function (a,b){alert('error=' + b)});
+                  });
+            }
+
+          }
 
         if(isTablet){
            var result = tabletInterface.database_query(JSON.stringify(json));
@@ -1110,10 +1295,20 @@ if(fcn){
     }
 
     static remove (str, fcn) {
-        var result = tabletInterface.io_remove(str);
+
+      //  var result = tabletInterface.io_remove(str,fcn);
+
+       var result = null;
         if (fcn) {
             fcn(result);
         }
+    }
+
+    static  uploaded_asset_remove(str, fcn){
+
+       tabletInterface.io_remove(str,fcn);
+
+
     }
 
     static getfile (str, fcn) {

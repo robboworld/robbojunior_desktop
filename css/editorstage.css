@@ -14,6 +14,19 @@
 
 }
 
+/*.sprite_upload{
+
+  position: absolute;
+  margin: 0px;
+  padding: 0px;
+  top: ${css_vh(2)};
+  left: ${css_vh(-3)};
+  width: ${css_vh(4)};
+  height: ${css_vh(4)};
+  background-color:blue;
+
+} */
+
 .robot_search{
 
   position: absolute;

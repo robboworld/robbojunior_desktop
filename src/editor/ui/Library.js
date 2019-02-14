@@ -18,6 +18,7 @@ let shaking;
 let type;
 let timeoutEvent;
 let libFrame;
+let selectedUploadedAssetsList = []; //modified_by_Yaroslav
 
 if (!String.prototype.startsWith) {
   Object.defineProperty(String.prototype, 'startsWith', {
@@ -306,8 +307,334 @@ export default class Library {
         nativeJr = false;
         data = (type == 'costumes') ? MediaLib.sprites : MediaLib.backgrounds;
         Library.displayLibAssets(data);
+
+        Library.displayUploadedAssets(data); //modified_by_Yaroslav
     }
 
+    static addUploadedThumbChoose (parent, data, w, h, fcn) {
+
+      var tb = newHTML('div', 'assetbox off', parent);
+      var md5 = data.md5;
+      tb.byme = nativeJr ? 1 : 0;
+      tb.setAttribute('id', md5);
+      tb.scale = (!data.scale) ? 0.5 : data.scale; // 0.5 : data.scale
+      tb.fieldname = data.name;
+      tb.w = Number(data.width);
+      tb.h = Number(data.height);
+      tb.need_flip = data.need_flip;
+
+      var img = newHTML('img', undefined, tb);
+      var scale = Math.min(w / tb.w, h / tb.h);
+      img.style.height = tb.h * scale + 'px';
+      img.style.width = tb.w * scale + 'px';
+
+      img.style.left = Math.floor(((w - (scale * tb.w)) / 2) + (9 * scaleMultiplier)) + 'px';
+      img.style.top = Math.floor(((h - (scale * tb.h)) / 2) + (9 * scaleMultiplier)) + 'px';
+      img.style.position = 'relative';
+
+      // Cached downsized-thumbnails are in pnglibrary
+      var pngPath = MediaLib.path.replace('svg', 'png');
+//AZ
+//        img.src = pngPath + IO.getFilename(md5) + '.png';
+
+      // img.src = "svglibrary/" + IO.getFilename(md5) + '.svg';
+
+      if (data.md5.indexOf("_custom") != -1) {
+
+          IO.getAsset(data.altmd5, drawMe);   //modified_by_Yaroslav
+
+      }else{
+
+        img.src = "svglibrary/" + IO.getFilename(md5) + '.svg';
+      }
+
+
+      function drawMe (dataurl) {
+          img.src = dataurl;
+      }
+
+
+      if (isTablet){
+      tb.ontouchstart = function (evt) {
+          fcn(evt, tb);
+      };
+    }else{
+
+      tb.onmousedown = function (evt) {
+          fcn(evt, tb);
+      };
+
+    }
+      return tb;
+
+    }
+
+
+
+    static selectUploadedAsset (e, tb) {
+
+
+      tb.pt = JSON.stringify(Events.getTargetPoint(e));
+      if (shaking && (e.target.className == 'deleteasset')) {
+          Library.removeSelectedUploadedAssests();
+          return;
+      } else if (shaking) {
+          Library.stopShaking();
+      }
+      if (/*tb.byme && */(tb.id != 'none')) {
+          holdit(tb);
+      }
+      tb.ontouchend = function (evt) {
+          clickMe(evt, tb);
+      };
+      window.onmouseup = function (evt) {
+          clickMe(evt, tb);
+      };
+      window.onmousemove = function (evt) {
+          clearEvents(evt, tb);
+      };
+      function holdit () {
+          var repeat = function () {
+              tb.ontouchend = undefined;
+              window.onmouseup = undefined;
+              window.onmousemove = undefined;
+              timeoutEvent = undefined;
+              //Library.stopShaking();
+              for (let asset_index = 0; asset_index <selectedUploadedAssetsList.length; asset_index++ ){
+
+                    let asset = selectedUploadedAssetsList[asset_index];
+                    Library.stopUploadedShaking(asset);
+
+              }
+              shaking = tb;
+            //  Library.clearAllSelections();
+
+              for (let asset_index = 0; asset_index <selectedUploadedAssetsList.length; asset_index++ ){
+
+                    let asset = selectedUploadedAssetsList[asset_index];
+                    Library.startShaking(asset);
+
+              }
+
+              //  Library.startShaking(tb);
+          };
+          timeoutEvent = setTimeout(repeat, 500);
+      }
+      function clearEvents (e, tb) {
+          var pt = Events.getTargetPoint(e);
+          var pt2 = JSON.parse(tb.pt);
+          if (Library.distance(pt, pt2) < 30) {
+              return;
+          }
+          e.preventDefault();
+          if (timeoutEvent) {
+              clearTimeout(timeoutEvent);
+          }
+          if (clickThumb) {
+              Library.unSelect(clickThumb);
+          }
+          timeoutEvent = undefined;
+          tb.ontouchend = undefined;
+          window.onmouseup = function () {
+              window.onmousemove = undefined;
+              window.onmouseup = undefined;
+          };
+      }
+      function clickMe (e, tb) {
+          if (timeoutEvent) {
+              clearTimeout(timeoutEvent);
+          }
+          Library.selectUploadedThisAsset(e, tb);
+          timeoutEvent = undefined;
+          tb.ontouchend = undefined;
+          tb.onmouseup = undefined;
+          window.onmousemove = undefined;
+          window.onmouseup = undefined;
+      }
+
+
+    }
+
+
+
+
+
+      static selectUploadedThisAsset (e, tb) {
+
+        if ((tb.id == selectedOne) && (selectedUploadedAssetsList.length < 2)) {
+            if (type == 'costumes') {
+                Library.closeSpriteSelection(e);
+            } else {
+                Library.closeBkgSelection(e);
+            }
+        } else {
+
+          if (!e.ctrlKey){
+
+              Library.clearAllSelections();
+
+          }
+
+
+
+            // Disable paint editor for PNG sprites
+            var thumbID = tb.id;
+            var thumbType = thumbID.substr(thumbID.length - 3);
+            if ((thumbType == 'png') || (e.ctrlKey)) {
+                gn('library_paintme').style.opacity = 0;
+
+                gn('library_paintme').ontouchstart = null;
+//AZ
+                gn('library_paintme').onmousedown = null;
+            } else {
+                gn('library_paintme').style.opacity = 1;
+                gn('library_paintme').ontouchstart = Library.editResource;
+//AZ
+                gn('library_paintme').onmousedown = Library.editResource;
+            }
+
+
+
+            tb.className = 'assetbox on';
+            selectedOne = tb.id;
+
+            if (e.ctrlKey){
+
+              selectedUploadedAssetsList.push(tb);
+              gn('okbut').style.opacity = 0;
+
+            }else{
+
+                  selectedUploadedAssetsList = [];
+                  selectedUploadedAssetsList.push(tb);
+                  gn('okbut').style.opacity = 1;
+
+            }
+
+
+
+            clickThumb = tb;
+            if (tb.fieldname) {
+                gn('assetname').textContent = tb.fieldname;
+            }
+        }
+
+      }
+
+
+      static removeSelectedUploadedAssests(){
+
+        ScratchAudio.sndFX('cut.wav');
+
+          var table = (type == 'costumes')?"customsprites":"custombkgs";
+
+
+        selectedUploadedAssetsList.forEach((asset) => {
+
+          var b = asset;
+
+          if (b.parentNode !== null){
+
+              b.parentNode.removeChild(b);
+
+              var asset_name = b.id.replace("_custom.svg","");
+
+              var json = {};
+              json.values = [asset_name];
+              json.stmt = `delete from ${table} where md5  = ?`;
+              iOS.stmt(json, function () {
+
+                  asset_name+=".svg";
+                  iOS.uploaded_asset_remove(asset_name, (result_object)=>{
+
+                  // TODO: optimize removing algorithm
+                  var  data = (type == 'costumes') ? MediaLib.sprites : MediaLib.backgrounds;
+
+                    // data.forEach((asset,asset_index) => {
+                    //
+                    //     if (b.id = asset.md5){
+                    //
+                    //         if (type == 'costumes'){
+                    //
+                    //           MediaLib.sprites.splice(asset_index,1);
+                    //           break;
+                    //
+                    //         }else{
+                    //
+                    //           MediaLib.backgrounds.splice(asset_index,1);
+                    //           break;
+                    //
+                    //         }
+                    //     }
+                    // });
+
+                    data = data.filter((asset) => {
+
+                        return asset.md5 !== b.id;
+                    });
+
+
+                    if (type == 'costumes'){
+
+                        MediaLib.sprites = data;
+
+
+                     }else{
+
+                         MediaLib.backgrounds = data;
+
+                    }
+
+
+                  });
+
+              });
+          }
+
+
+        });
+
+
+
+        clickThumb = undefined;
+        selectedOne = undefined;
+        return true;
+
+      }
+
+
+     static displayUploadedAssets(data){ //modified_by_Yaroslav
+
+       var div = gn('scrollarea');
+       if (data.length < 1) {
+           return;
+       }
+       var order =  data[0].order;
+       var key = order ? order.split(',')[1] : '';
+       for (var i = 0; i < data.length; i++) {
+
+         if (data[i].md5.indexOf("_custom") == -1){ //modified_by_Yaroslav
+
+             continue;
+         }
+
+           order = data[i].sprites_order;
+           var key2 = order ? order.split(',')[1] : '';
+           if (key2 != key) {
+               Library.addHR(div);
+               key = key2;
+           }
+           if ('separator' in data[i]) {
+               Library.addHR(div);
+           } else {
+               Library.addUploadedThumbChoose(div, data[i], 120 * scaleMultiplier,
+                   90 * scaleMultiplier, Library.selectUploadedAsset);
+           }
+
+
+       }
+
+    }
 
     static displaySoundLibAssets (data) {
         var div = gn('scrollarea');
@@ -337,10 +664,16 @@ export default class Library {
         if (data.length < 1) {
             return;
         }
-        var order = data[0].order;
+        var order =  data[0].order;
         var key = order ? order.split(',')[1] : '';
         for (var i = 0; i < data.length; i++) {
-            order = data[i].order;
+
+            if (data[i].md5.indexOf("_custom") != -1){ //modified_by_Yaroslav
+
+                continue;
+            }
+
+            order =  (data[i].md5.indexOf("_custom") < 0)? data[i].order:data[i].sprites_order; //modified_by_Yaroslav
             var key2 = order ? order.split(',')[1] : '';
             if (key2 != key) {
                 Library.addHR(div);
@@ -520,7 +853,21 @@ export default class Library {
 //AZ
 //        img.src = pngPath + IO.getFilename(md5) + '.png';
 
-        img.src = "svglibrary/" + IO.getFilename(md5) + '.svg';
+        // img.src = "svglibrary/" + IO.getFilename(md5) + '.svg';
+
+        if (data.md5.indexOf("_custom") != -1) {
+
+            IO.getAsset(data.altmd5, drawMe);   //modified_by_Yaroslav
+
+        }else{
+
+          img.src = "svglibrary/" + IO.getFilename(md5) + '.svg';
+        }
+
+
+        function drawMe (dataurl) {
+            img.src = dataurl;
+        }
 
 
         if (isTablet){
@@ -721,6 +1068,24 @@ export default class Library {
         shaking = b;
     }
 
+    static stopUploadedShaking(shk){
+
+      // if (!shaking) {
+      //     return;
+      // }
+    //  var b = shaking;
+
+      var b = shk;
+
+      b.setAttribute('class', 'assetbox off');
+      var ic = b.childNodes[b.childElementCount - 1];
+      if (ic.getAttribute('class') == 'deleteasset') {
+          b.removeChild(ic);
+      }
+      shaking = undefined;
+
+    }
+
     static stopShaking () {
         if (!shaking) {
             return;
@@ -867,6 +1232,8 @@ export default class Library {
             }
         } else {
             Library.clearAllSelections();
+
+              gn('okbut').style.opacity = 1;//modified_by_Yaroslav
 
             // Disable paint editor for PNG sprites
             var thumbID = tb.id;

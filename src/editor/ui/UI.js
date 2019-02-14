@@ -20,6 +20,7 @@ import Paint from '../../painteditor/Paint';
 import Events from '../../utils/Events';
 import Localization from '../../utils/Localization';
 import ScratchAudio from '../../utils/ScratchAudio';
+import JSZip from 'jszip';
 import {frame, gn, CSSTransition, localx, newHTML, scaleMultiplier, getIdFor, isTablet, newDiv,
     newTextInput, isAndroid, getDocumentWidth, getDocumentHeight, setProps, globalx} from '../../utils/lib';
 
@@ -146,6 +147,417 @@ export default class UI {
 
  }
 
+ static uploadSprite(asset_type,callback,e){
+
+   console.log(`asset type: ${asset_type}`);
+
+   var assets_uploaded_count = 0;
+   var assets_count = 0;
+
+   var error_object = {err_message:"",err_code:0};
+
+   var return_object = {error:error_object,uploaded_assets:0};
+
+
+   var validate = function(contents,file_name){
+
+     //error_code = 4
+
+     // var parser = new DOMParser();
+     // var doc = parser.parseFromString(contents, "image/svg+xml");
+     //
+     // var root_element = doc.documentElement;
+
+     var return_code = 0;
+
+     var deprecated = ["style","xlink:href","use","matrix","transform","gradient","fill:url","<clipPath>","<defs>","<stop/>","Units",'d="m'];
+
+     for (var deprecated_elem in deprecated){
+
+        if (contents.indexOf(deprecated[deprecated_elem]) != -1){
+
+
+          error_object.err_message = `Invalid asset format. Deprecated construction:  ${deprecated[deprecated_elem]}`;
+          error_object.err_code = 4;
+          error_object.file_name = file_name;
+
+          return_object.error = error_object;
+          return_object.uploaded_assets = assets_uploaded_count;
+
+            callback(return_object);
+
+
+          return_code = -1;
+        }
+
+     }
+
+
+     return return_code;
+
+   }
+
+   var getWidthFromAssetContents = function(contents){
+
+
+    // var width = Number(contents.slice( (contents.indexOf('width="') +6 ), contents.indexOf('width="')  ));
+
+    var width = 0;
+
+    var re = /width=\"\d+\.?\d*px\"/;
+
+    var matches = re.exec(contents);
+
+    if (matches !== null){
+
+       width = matches[0];
+
+       console.log(`width = ${width}`);
+
+        width = width.replace('width="',"");
+
+        width = width.replace('px"',"");
+
+       console.log(`width = ${width}`);
+
+        return width;
+
+
+    }else{
+
+        return -1;
+
+    }
+
+
+
+        return -1;
+
+        //return 480;
+
+   }
+
+   var getHeightFromAssetContents = function(contents){
+
+     var height = 0;
+
+     var re = /height=\"\d+\.?\d*px\"/; // \"\d+px\"/
+
+     var matches = re.exec(contents);
+
+     if (matches !== null){
+
+        height = matches[0];
+
+        console.log(`height = ${height}`);
+
+         height = height.replace('height="',"");
+
+         height = height.replace('px"',"");
+
+        console.log(`height = ${height}`);
+
+         return height;
+
+
+     }else{
+
+         return -1;
+
+     }
+
+
+
+         return -1;
+
+    //  return 360;
+
+   }
+
+   var file = e.target.files[0];
+   if (!file) {
+      return;
+   }
+
+      var reader = new FileReader();
+
+  var fileName =  e.target.files[0].name; // TODO: check if svg or Zip
+
+  if (fileName.indexOf(".svg") != -1){
+
+       reader.readAsText(file);
+
+  }else{
+
+       reader.readAsDataURL(file);
+
+
+  }
+
+  var upload_one_asset = function(sprite_content,file_name){
+
+
+
+
+    let contents = sprite_content;
+
+    var validation_return_code = validate(contents,file_name);
+
+
+    if (validation_return_code != 0) return;
+
+
+
+
+    var asset_width = (asset_type == "sprite")? getWidthFromAssetContents(contents):480;   // TODO: check if correct
+
+    var asset_height = (asset_type == "sprite")? getHeightFromAssetContents(contents):360; // TODO: check if correct
+
+    // TODO: Make validation
+
+
+    if (Number(asset_width) == -1)
+    {
+
+      error_object.err_message = `Invalid asset format. Cann't get asset width.`;
+      error_object.err_code = 1;
+      error_object.file_name = file_name;
+
+      return_object.error = error_object;
+      return_object.uploaded_assets = assets_uploaded_count;
+
+        callback(return_object);
+
+      return;
+    }
+    else if (Number(asset_height) == -1){
+
+      error_object.err_message = `Invalid asset format. Cann't get asset height.`;
+      error_object.err_code = 2;
+      error_object.file_name = file_name;
+
+      return_object.error = error_object;
+      return_object.uploaded_assets = assets_uploaded_count;
+
+      callback(return_object);
+
+      return;
+    }
+
+  //  console.log("uploadSpite file contents: " + contents);
+
+    contents = btoa(contents);
+
+    file_name = file_name.replace(".svg","")
+
+
+    // TODO: handle errors
+    iOS.setmedianame(contents, file_name, 'svg',() =>  {
+
+        console.log(`Custom asset ${file_name} was cucessfully saved to the internal filesystem`);
+
+        // TODO: check asset not exist
+
+
+
+        var table = (asset_type == "sprite")?"customsprites":"custombkgs";
+
+        var json = {};
+        var keylist = (asset_type == "sprite")?['md5', 'altmd5', 'version', 'width', 'height', 'ext','name','need_flip',"sprites_order"]:['md5', 'altmd5', 'version', 'width', 'height', 'ext','name'];
+        var values  = (asset_type == "sprite")?'?,?,?,?,?,?,?,?,?':'?,?,?,?,?,?,?';
+        json.values = (asset_type == "sprite")?[file_name, file_name, 'iOSv01', asset_width, asset_height, 'svg',file_name,"false","characters,15 Custom"]:[file_name, file_name, 'iOSv01', asset_width, asset_height, 'svg',file_name];
+        json.stmt = `insert into ${table} (` + keylist.toString() +
+            ') values (' + values + ')';
+
+        // TODO: handle errors
+        iOS.stmt(json, () => {
+
+            console.log(`Custom asset ${file_name}   appropriate record  was cucessfully saved to the internal db`);
+
+            assets_uploaded_count++;
+
+            error_object.err_message = "";
+            error_object.err_code = 0;
+
+            return_object.error = error_object;
+            return_object.uploaded_assets = assets_uploaded_count;
+
+            callback(return_object);
+
+        });
+
+  });
+
+
+   }
+
+
+   reader.onload = function(e){
+
+      var contents = e.target.result;
+
+
+      if (contents.indexOf("data:application/zip;base64,") != -1){
+
+          contents = e.target.result.replace("data:application/zip;base64,", "");
+
+          var receivedZip = JSZip();
+
+          try {
+
+            receivedZip.load(contents, {
+                'base64': true
+            });
+
+          } catch (e) {
+
+              console.error(`Sprites import error: ${e}`);
+
+              error_object.err_message = `Sprites import error: ${e}`;
+              error_object.err_code = 3;
+
+              return_object.error = error_object;
+              return_object.uploaded_assets = assets_uploaded_count;
+
+              callback(return_object);
+
+          }
+
+
+            // receivedZip.filter((relativePath, file) => {
+            //
+            //   // TODO: check some staff; sucessfull message
+            //
+            //   if (file.dir) {
+            //       return;
+            //   }
+            //   var fullName = relativePath.split('/').pop();
+            //
+            //   var fileData = file.asText();
+            //
+            //     upload_one_asset(fileData,fullName);
+            //
+            // });
+
+
+
+            receivedZip.filter((relativePath, file) => {
+
+              // TODO: check some staff; sucessfull message
+
+              if (file.dir) {
+                  return;
+              }
+              var fullName = relativePath.split('/').pop();
+
+              var fileData = file.asText();
+
+                upload_one_asset(fileData,fullName);
+
+            });
+
+
+
+      }else{
+
+        upload_one_asset(contents,fileName);
+
+
+      }
+
+
+
+
+
+
+
+
+   };
+
+
+ }
+
+static uploadSpriteFromDisk(callback){
+
+  console.log("upload sprite from disk");
+
+
+  var oInputFile;
+
+
+if (isAndroid){
+
+
+
+
+  }else{
+
+//    gn('sprite_upload').onmousedown = function(){};
+
+   if (oInputFile == undefined){
+  oInputFile = document.createElement("input");
+  oInputFile.setAttribute('type', "file");
+  oInputFile.style.position = "absolute";
+  oInputFile.style.right = "0px";
+  oInputFile.style.top = "0px";
+  oInputFile.style.width = "1px";
+  oInputFile.style.height = "1px";
+  oInputFile.addEventListener('change',UI.uploadSprite.bind(this,"sprite",callback), false);
+  document.body.appendChild(oInputFile);
+}
+
+    setTimeout(function(){
+      oInputFile.click();
+      oInputFile.focus();
+    //  gn('sprite_upload').onmousedown = UI.uploadSpriteFromDisk;
+    }, 1000);
+
+
+  }
+
+
+}
+
+static uploadBackgroundFromDisk(callback){
+
+  console.log("upload background from disk");
+
+
+  var oInputFile;
+
+
+if (isAndroid){
+
+
+
+
+  }else{
+
+  //  gn('bkg_upload').onmousedown = function(){};
+
+   if (oInputFile == undefined){
+  oInputFile = document.createElement("input");
+  oInputFile.setAttribute('type', "file");
+  oInputFile.style.position = "absolute";
+  oInputFile.style.right = "0px";
+  oInputFile.style.top = "0px";
+  oInputFile.style.width = "1px";
+  oInputFile.style.height = "1px";
+  oInputFile.addEventListener('change',UI.uploadSprite.bind(this,"background",callback), false);
+  document.body.appendChild(oInputFile);
+}
+
+    setTimeout(function(){
+      oInputFile.click();
+      oInputFile.focus();
+  //    gn('bkg_upload').onmousedown = UI.uploadBackgroundFromDisk;
+    }, 1000);
+
+
+  }
+
+
+}
 
 static showRobotSearchingState(){
 
@@ -1162,6 +1574,8 @@ if (isAndroid){
       if (!isTablet){
 
         UI.creatTopBarClicky(div, 'robot_connection_status', 'robot_connection_status', null); //modified_by_Yaroslav
+
+      //  UI.creatTopBarClicky(div, 'sprite_upload', 'sprite_upload', UI.uploadSpriteFromDisk); //modified_by_Yaroslav
 
     }
 

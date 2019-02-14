@@ -61,7 +61,9 @@
 
 {"md5":"city.svg","width":480,"height":360,"ext":"svg","name":"city"},
 
-{"md5":"autumn.svg","width":480,"height":360,"ext":"svg","name":"autumn"}
+{"md5":"autumn.svg","width":480,"height":360,"ext":"svg","name":"autumn"},
+
+{"md5":"separator","width":480,"height":360,"ext":"svg","name":"separator","separator":""}
 
     ],
     "sprites": [

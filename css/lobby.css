@@ -38,7 +38,7 @@ div.frame {
     display: inline-block;
     list-style-type: none;
     margin: 0px;
-    width: ${css_vh(85)}; /*78.13*/
+    width: ${css_vh(130)}; /*78.13*/
     position: absolute;
     left: 0px;
 }
@@ -126,6 +126,56 @@ div.frame {
     padding: 0;
     margin: auto auto;
 }
+
+
+#topbar ul.topbar-nav li.sprite_upload {
+    width: ${css_vh(16)};
+}
+
+#topbar ul.topbar-nav .sprite_upload .sprite_upload_icon {
+    display: block;
+    width: ${css_vh(10)};
+    height: ${css_vh(10)};
+    background: url('../assets/lobby/loadProject.svg');
+    background-size: 100%;
+    padding: 0;
+    margin: auto auto;
+}
+
+/*#topbar ul.topbar-nav .sprite_upload .sprite_upload_icon:active {
+    display: block;
+    width: ${css_vh(10)};
+    height: ${css_vh(10.0)};
+    background: url('../assets/lobby/loadProjectPressed.svg');
+    background-size: 101%;
+    padding: 0;
+    margin: auto auto;
+}*/
+
+
+#topbar ul.topbar-nav li.bkg_upload {
+    width: ${css_vh(16)};
+}
+
+#topbar ul.topbar-nav .bkg_upload .bkg_upload_icon {
+    display: block;
+    width: ${css_vh(10)};
+    height: ${css_vh(10)};
+    background: url('../assets/lobby/loadProject.svg');
+    background-size: 100%;
+    padding: 0;
+    margin: auto auto;
+}
+
+/*#topbar ul.topbar-nav .bkg_upload .bkg_upload_icon:active {
+    display: block;
+    width: ${css_vh(10)};
+    height: ${css_vh(10.0)};
+    background: url('../assets/lobby/loadProjectPressed.svg');
+    background-size: 101%;
+    padding: 0;
+    margin: auto auto;
+}*/
 
 #topbar ul.topbar-nav .home.on{background: #00AF41   /*#F9A737*/; height: ${css_vh(10.81)};}
 #topbar ul.topbar-nav .home.off{background: none; height: auto;}
@@ -242,7 +292,7 @@ ul#settings.reference {
 }
 
 #version{
-  
+
 float:right;
 margin-right:50px;
 
@@ -506,6 +556,8 @@ div.localizationselect.selected:after {
     height: 89.1%;
 }
 
+
+
 .htmlcontents.help .samples {
     position: relative;
     padding: 0px;
@@ -535,6 +587,8 @@ div.localizationselect.selected:after {
     top: ${css_vh(10.42)};
 }
 
+
+
 .errormsg {
     margin: ${20 * scaleMultiplier}px ${70 * scaleMultiplier}px 0px;
     padding: 0px;
@@ -547,4 +601,112 @@ div.localizationselect.selected:after {
     vertical-align: middle;
     font-size: ${18 * scaleMultiplier}px;
     font-weight: bold;
+}
+
+
+.arrow-image{
+
+    position: fixed;
+    top: 45%;
+    right: 7%;
+    z-index:1000;
+    width: 180px;
+    height: 50px;
+}
+
+.back-to-home-arrow{
+
+  position: fixed;
+  top: 45%;
+  left: 7%;
+  z-index:1000;
+  width: 180px;
+  height: 50px;
+
+}
+
+.htmlcontents.sprite-bkgs-load-page {
+  padding: ${css_vh(14.5)} 0px ${css_vh(2)};
+  margin: ${css_vh(3.2)} auto;
+  width: ${css_vw(87.89)};
+  height: auto;
+}
+
+div.upload-image-button {
+    border-radius: 15px;
+    width: ${css_vw(27)};
+    height: 47pt;
+    float: left;
+    position: relative; /* for absolute positioning of pseudo :after element */
+    background-color: /*#35A8E0;*/ rgb(0,160,56);
+    color: #fff;
+    /* font-size: ${css_vh(4.5)}; */
+    /* fontsize based on device vertical height doesn't work on 16:9 aspect Android device, just set fixed size font */
+    font-size: 34.5px;
+    text-align: center;
+    margin-left: ${css_vw(3)};
+    margin-bottom: ${css_vw(2)};
+    padding-top: 2%;
+    background-image: linear-gradient(0deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 50%, rgba(255,255,255,0.2) 51%);
+}
+
+div.upload-image-buttons {
+    margin: auto;
+    margin-top: ${css_vh(4)};
+    width: 70%;
+}
+
+h1.upload-image-title {
+    font-family: Roboto;
+    font-size: ${css_vh(4.5)};
+    color: /*#f5a322;*/ rgb(0,160,56);
+    text-align: center;
+}
+
+.progress-ballon {
+    margin: ${20 * scaleMultiplier}px ${70 * scaleMultiplier}px 0px;
+    padding: 0px;
+
+    position: fixed;
+    top: 40%;
+    left: 45%;
+}
+
+.progress-ballon h1 {
+    text-align: left;
+    text-shadow: 0 ${2 * scaleMultiplier}px #fff;
+    color: #C18134;
+    vertical-align: middle;
+    font-size: ${18 * scaleMultiplier}px;
+    font-weight: bold;
+}
+
+.error-area{
+
+    overflow:scroll;
+    max-height: 300px;
+
+  margin: ${20 * scaleMultiplier}px ${70 * scaleMultiplier}px 0px;
+  padding: 0px;
+
+  position: fixed;
+  top: 47%;
+  left: 30%;
+
+
+
+
+}
+
+ .error-msg{
+
+    margin-top: 10px;
+
+    text-align: left;
+    text-shadow: 0 ${2 * scaleMultiplier}px #fff;
+    color: #C18134;
+    vertical-align: middle;
+    font-size: ${18 * scaleMultiplier}px;
+    font-weight: bold;
+
 }
