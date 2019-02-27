@@ -432,7 +432,7 @@ if(fcn){
 
           //window.requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem;
           //window.requestFileSystem(window.TEMPORARY, 5*1024*1024 /*5MB*/, onInitFs, errorHandler);
-          navigator.webkitPersistentStorage.requestQuota(50*1024*1024,
+          navigator.webkitPersistentStorage.requestQuota(2 *1024*1024*1024, //2Гб
              function(grantedBytes){
                 console.log("byte granted=" + grantedBytes);
                 window.webkitRequestFileSystem(PERSISTENT, grantedBytes, onInitFs, errorHandler);
@@ -502,7 +502,7 @@ if(fcn){
     }
 
 
-    navigator.webkitPersistentStorage.requestQuota(50*1024*1024,
+    navigator.webkitPersistentStorage.requestQuota(2 *1024*1024*1024, //2Гб
        function(grantedBytes){
     //      console.log("byte granted=" + grantedBytes);
           window.webkitRequestFileSystem(PERSISTENT, grantedBytes, _onInitFs, errorHandler);
@@ -540,8 +540,8 @@ if(fcn){
           function onInitFs(fs) {
              console.log('Opened file system: ' + fs.name);
 
-
-             fs.root.getFile(sFile, {create: true}, function(fileEntry) {
+                                    //true
+             fs.root.getFile(sFile, {create: false}, function(fileEntry) {
                 fileEntry.file(function(file) {
                    var reader = new FileReader();
 
@@ -556,7 +556,7 @@ if(fcn){
              }, errorHandler);
           };
 
-          navigator.webkitPersistentStorage.requestQuota(50*1024*1024,
+          navigator.webkitPersistentStorage.requestQuota(2 *1024*1024*1024, //2Гб
              function(grantedBytes){
                 console.log("byte granted=" + grantedBytes);
                 window.webkitRequestFileSystem(PERSISTENT, grantedBytes, onInitFs, errorHandler);
@@ -641,7 +641,7 @@ if(fcn){
              }, errorHandler);
           };
 
-          navigator.webkitPersistentStorage.requestQuota(50*1024*1024,
+          navigator.webkitPersistentStorage.requestQuota(2 *1024*1024*1024, //2Гб
              function(grantedBytes){
                 console.log("byte granted=" + grantedBytes);
                 window.webkitRequestFileSystem(PERSISTENT, grantedBytes, onInitFs, errorHandler);
