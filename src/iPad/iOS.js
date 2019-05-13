@@ -430,6 +430,11 @@ if(fcn){
           };
 
 
+        //    window.webkitStorageInfo.queryUsageAndQuota(
+        //         webkitStorageInfo.PERSISTENT,
+        //         usageCallback,
+        //         errorCallback);
+
           //window.requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem;
           //window.requestFileSystem(window.TEMPORARY, 5*1024*1024 /*5MB*/, onInitFs, errorHandler);
           navigator.webkitPersistentStorage.requestQuota(2 *1024*1024*1024, //2Гб
@@ -527,7 +532,35 @@ if(fcn){
        }
 
 
+       tabletInterface.io_getStorageSpaceInfo = function(callback){
+             console.log("io_getStorageFreeSpace");
 
+           
+
+            let errorCallback = function(error){
+
+                console.error(error);
+            }
+
+            let usageCallback = function(bytesInUse,grantedBytes){
+
+                 var result = {
+                        bytesInUse: bytesInUse,
+                        grantedBytes: grantedBytes
+                    }
+
+                if (callback){
+                    callback(result);
+                }
+
+            }
+
+             window.webkitStorageInfo.queryUsageAndQuota(
+                webkitStorageInfo.PERSISTENT,
+                usageCallback,
+                errorCallback);
+
+       }
 
        tabletInterface.io_loadFileAPI = function(sFile, callback){
           console.log("io_loadFileAPI =" + sFile);
@@ -1296,12 +1329,22 @@ if(fcn){
 
     static remove (str, fcn) {
 
-      //  var result = tabletInterface.io_remove(str,fcn);
+      
 
-       var result = null;
-        if (fcn) {
-            fcn(result);
-        }
+    //    var result = null;
+    //     if (fcn) {
+    //         fcn(result);
+    //     }
+
+        tabletInterface.io_remove(str,(result_object) => {
+
+            if (fcn){
+
+                fcn("iOS remove:" +str + " "  + result_object.error.err_msg);
+            }
+
+        });
+        
     }
 
     static  uploaded_asset_remove(str, fcn){
@@ -1323,6 +1366,12 @@ if(fcn){
         if (fcn) {
             fcn(result);
         }
+    }
+
+    static getStorageSpaceInfo(fcn){
+
+        tabletInterface.io_getStorageSpaceInfo(fcn);
+
     }
 
     // Sound functions

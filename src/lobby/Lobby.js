@@ -319,6 +319,47 @@ export default class Lobby {
           var error_area = newHTML('div', 'error-area', div);
           error_area.setAttribute('id', 'error_area');
 
+          //////////////////
+          //free space bar
+
+          var free_space_bar_container = newHTML('div', 'free_space_bar_container', div);
+          free_space_bar_container.setAttribute('id', 'free_space_bar_container');
+
+          var free_space_bar = newHTML('div', 'free_space_bar', free_space_bar_container);
+          free_space_bar.setAttribute('id', 'free_space_bar');
+
+          var free_space_bar_green_bar = newHTML('div', 'free_space_bar_green_bar', free_space_bar);
+          free_space_bar_green_bar.setAttribute('id', 'free_space_bar_green_bar');
+
+          var free_space_bar_text = newHTML('div', 'free_space_bar_text', free_space_bar);
+          free_space_bar_text.setAttribute('id', 'free_space_bar_text');
+
+          iOS.getStorageSpaceInfo((spaceResultObject) => {
+
+            console.log(`bytesInUse: ${spaceResultObject.bytesInUse} grantedBytes: ${spaceResultObject.grantedBytes}`);
+
+           
+              
+            let free_space = spaceResultObject.grantedBytes - spaceResultObject.bytesInUse;
+           
+            //in Mb  
+            free_space = Math.round(free_space / 1024 / 1024);
+
+            let grantedMb = Math.round(spaceResultObject.grantedBytes / 1024 / 1024);
+
+            free_space_bar_text.textContent = `Свободно ${free_space} Мб из ${grantedMb}`;
+
+            //let percent_per_pixel = 5;
+
+            let free_space_percents = Math.round(free_space / grantedMb * 100);
+
+            //200px - 100%
+            let free_space_bar_green_bar_pixels = Math.round(free_space_percents * 200 / 100);
+
+            free_space_bar_green_bar.style.width = free_space_bar_green_bar_pixels + "px";
+
+
+          });
 
     }
 

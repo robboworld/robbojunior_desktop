@@ -7054,7 +7054,8 @@
 	
 	               //window.requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem;
 	               //window.requestFileSystem(window.TEMPORARY, 5*1024*1024 /*5MB*/, onInitFs, errorHandler);
-	               navigator.webkitPersistentStorage.requestQuota(50 * 1024 * 1024, function (grantedBytes) {
+	               navigator.webkitPersistentStorage.requestQuota(2 * 1024 * 1024 * 1024, //2Гб
+	               function (grantedBytes) {
 	                  console.log("byte granted=" + grantedBytes);
 	                  window.webkitRequestFileSystem(PERSISTENT, grantedBytes, onInitFs, errorHandler);
 	               }, errorHandler);
@@ -7108,7 +7109,8 @@
 	                  }, errorHandler);
 	               };
 	
-	               navigator.webkitPersistentStorage.requestQuota(50 * 1024 * 1024, function (grantedBytes) {
+	               navigator.webkitPersistentStorage.requestQuota(2 * 1024 * 1024 * 1024, //2Гб
+	               function (grantedBytes) {
 	                  //      console.log("byte granted=" + grantedBytes);
 	                  window.webkitRequestFileSystem(PERSISTENT, grantedBytes, _onInitFs, errorHandler);
 	               }, errorHandler);
@@ -7126,6 +7128,29 @@
 	               console.log("io_getmediadone =" + name);
 	            };
 	
+	            tabletInterface.io_getStorageSpaceInfo = function (callback) {
+	               console.log("io_getStorageFreeSpace");
+	
+	               var errorCallback = function errorCallback(error) {
+	
+	                  console.error(error);
+	               };
+	
+	               var usageCallback = function usageCallback(bytesInUse, grantedBytes) {
+	
+	                  var result = {
+	                     bytesInUse: bytesInUse,
+	                     grantedBytes: grantedBytes
+	                  };
+	
+	                  if (callback) {
+	                     callback(result);
+	                  }
+	               };
+	
+	               window.webkitStorageInfo.queryUsageAndQuota(webkitStorageInfo.PERSISTENT, usageCallback, errorCallback);
+	            };
+	
 	            tabletInterface.io_loadFileAPI = function (sFile, callback) {
 	               console.log("io_loadFileAPI =" + sFile);
 	
@@ -7136,7 +7161,8 @@
 	               function onInitFs(fs) {
 	                  console.log('Opened file system: ' + fs.name);
 	
-	                  fs.root.getFile(sFile, { create: true }, function (fileEntry) {
+	                  //true
+	                  fs.root.getFile(sFile, { create: false }, function (fileEntry) {
 	                     fileEntry.file(function (file) {
 	                        var reader = new FileReader();
 	
@@ -7150,7 +7176,8 @@
 	                  }, errorHandler);
 	               };
 	
-	               navigator.webkitPersistentStorage.requestQuota(50 * 1024 * 1024, function (grantedBytes) {
+	               navigator.webkitPersistentStorage.requestQuota(2 * 1024 * 1024 * 1024, //2Гб
+	               function (grantedBytes) {
 	                  console.log("byte granted=" + grantedBytes);
 	                  window.webkitRequestFileSystem(PERSISTENT, grantedBytes, onInitFs, errorHandler);
 	               }, errorHandler);
@@ -7219,7 +7246,8 @@
 	                  }, errorHandler);
 	               };
 	
-	               navigator.webkitPersistentStorage.requestQuota(50 * 1024 * 1024, function (grantedBytes) {
+	               navigator.webkitPersistentStorage.requestQuota(2 * 1024 * 1024 * 1024, //2Гб
+	               function (grantedBytes) {
 	                  console.log("byte granted=" + grantedBytes);
 	                  window.webkitRequestFileSystem(PERSISTENT, grantedBytes, onInitFs, errorHandler);
 	               }, errorHandler);
@@ -7764,12 +7792,18 @@
 	      key: 'remove',
 	      value: function remove(str, fcn) {
 	
-	         //  var result = tabletInterface.io_remove(str,fcn);
+	         //    var result = null;
+	         //     if (fcn) {
+	         //         fcn(result);
+	         //     }
 	
-	         var result = null;
-	         if (fcn) {
-	            fcn(result);
-	         }
+	         tabletInterface.io_remove(str, function (result_object) {
+	
+	            if (fcn) {
+	
+	               fcn("iOS remove:" + str + " " + result_object.error.err_msg);
+	            }
+	         });
 	      }
 	   }, {
 	      key: 'uploaded_asset_remove',
@@ -7792,6 +7826,12 @@
 	         if (fcn) {
 	            fcn(result);
 	         }
+	      }
+	   }, {
+	      key: 'getStorageSpaceInfo',
+	      value: function getStorageSpaceInfo(fcn) {
+	
+	         tabletInterface.io_getStorageSpaceInfo(fcn);
 	      }
 	
 	      // Sound functions
@@ -8396,6 +8436,44 @@
 	
 	            var error_area = (0, _lib.newHTML)('div', 'error-area', div);
 	            error_area.setAttribute('id', 'error_area');
+	
+	            //////////////////
+	            //free space bar
+	
+	            var free_space_bar_container = (0, _lib.newHTML)('div', 'free_space_bar_container', div);
+	            free_space_bar_container.setAttribute('id', 'free_space_bar_container');
+	
+	            var free_space_bar = (0, _lib.newHTML)('div', 'free_space_bar', free_space_bar_container);
+	            free_space_bar.setAttribute('id', 'free_space_bar');
+	
+	            var free_space_bar_green_bar = (0, _lib.newHTML)('div', 'free_space_bar_green_bar', free_space_bar);
+	            free_space_bar_green_bar.setAttribute('id', 'free_space_bar_green_bar');
+	
+	            var free_space_bar_text = (0, _lib.newHTML)('div', 'free_space_bar_text', free_space_bar);
+	            free_space_bar_text.setAttribute('id', 'free_space_bar_text');
+	
+	            _iOS2.default.getStorageSpaceInfo(function (spaceResultObject) {
+	
+	                console.log('bytesInUse: ' + spaceResultObject.bytesInUse + ' grantedBytes: ' + spaceResultObject.grantedBytes);
+	
+	                var free_space = spaceResultObject.grantedBytes - spaceResultObject.bytesInUse;
+	
+	                //in Mb  
+	                free_space = Math.round(free_space / 1024 / 1024);
+	
+	                var grantedMb = Math.round(spaceResultObject.grantedBytes / 1024 / 1024);
+	
+	                free_space_bar_text.textContent = '\u0421\u0432\u043E\u0431\u043E\u0434\u043D\u043E ' + free_space + ' \u041C\u0431 \u0438\u0437 ' + grantedMb;
+	
+	                //let percent_per_pixel = 5;
+	
+	                var free_space_percents = Math.round(free_space / grantedMb * 100);
+	
+	                //200px - 100%
+	                var free_space_bar_green_bar_pixels = Math.round(free_space_percents * 200 / 100);
+	
+	                free_space_bar_green_bar.style.width = free_space_bar_green_bar_pixels + "px";
+	            });
 	        }
 	    }, {
 	        key: 'loadProjects',
@@ -31823,7 +31901,22 @@
 	
 	                //  console.log("uploadSpite file contents: " + contents);
 	
-	                contents = btoa(contents);
+	                try {
+	
+	                    contents = btoa(contents);
+	                } catch (e) {
+	
+	                    error_object.err_message = e;
+	                    error_object.err_code = 4;
+	                    error_object.file_name = file_name;
+	
+	                    return_object.error = error_object;
+	                    return_object.uploaded_assets = assets_uploaded_count;
+	
+	                    callback(return_object);
+	
+	                    return;
+	                }
 	
 	                file_name = file_name.replace(".svg", ""
 	

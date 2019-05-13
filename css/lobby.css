@@ -710,3 +710,28 @@ h1.upload-image-title {
     font-weight: bold;
 
 }
+
+.free_space_bar_container{
+
+    margin-top: 300px;
+    min-width: 200px;
+}
+
+.free_space_bar_green_bar{
+
+    background-color: green;
+    /*width:50px;*/
+    height:25px;
+}
+
+.free_space_bar{
+
+    background-color: black;
+    height:25px;
+    width:200px;
+}
+
+.free_space_bar_text{
+
+
+}

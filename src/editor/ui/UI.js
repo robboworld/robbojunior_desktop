@@ -346,7 +346,26 @@ export default class UI {
 
   //  console.log("uploadSpite file contents: " + contents);
 
-    contents = btoa(contents);
+      try {
+
+          contents = btoa(contents);
+
+      } catch (e) {
+
+        error_object.err_message = e;
+        error_object.err_code = 4;
+        error_object.file_name = file_name;
+
+        return_object.error = error_object;
+        return_object.uploaded_assets = assets_uploaded_count;
+
+        callback(return_object);
+
+        return;
+
+      }
+
+
 
     file_name = file_name.replace(".svg","")
 
