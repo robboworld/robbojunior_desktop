@@ -437,6 +437,7 @@ if(fcn){
 
           //window.requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem;
           //window.requestFileSystem(window.TEMPORARY, 5*1024*1024 /*5MB*/, onInitFs, errorHandler);
+
           navigator.webkitPersistentStorage.requestQuota(2 *1024*1024*1024, //2Гб
              function(grantedBytes){
                 console.log("byte granted=" + grantedBytes);
@@ -450,6 +451,33 @@ if(fcn){
               console.log('Data is not a blob. Standart callback case.');
              callback(name + "." + extension);
           }
+       }
+
+       tabletInterface.requestQuota = function(initFsCb,errorHandler){
+
+           let errorCallback = function(error){
+
+                console.error("tabletInterface.requestQuota " + error);
+            }
+
+            let usageCallback = function(bytesInUse,grantedBytes){
+
+
+          navigator.webkitPersistentStorage.requestQuota(grantedBytes, 
+             function(grantedBytes){
+                console.log("byte granted=" + grantedBytes);
+                window.webkitRequestFileSystem(PERSISTENT, grantedBytes, initFsCb, errorHandler);
+             }, errorHandler
+           );
+
+            }
+
+        
+         window.webkitStorageInfo.queryUsageAndQuota(
+                webkitStorageInfo.PERSISTENT,
+                usageCallback,
+                errorCallback);
+
        }
 
 
