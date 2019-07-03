@@ -447,7 +447,8 @@ export default class Project {
             if (thumb.md5.indexOf('samples/') < 0) { // In case we've exited story-starter mode
                 Project.thumbnailUnique(thumb.md5, id, function (isUnique) {
                     if (isUnique) {
-                        iOS.remove(thumb.md5, iOS.trace); // remove thumb;
+                        console.log(`Project.js -> save func -> remove md5: ${thumb.md5}`);
+                        //iOS.remove(thumb.md5, iOS.trace); // remove thumb;
                     }
                 });
             }

@@ -387,7 +387,8 @@ if(fcn){
 
 
           function errorHandler(e){
-             alert("file error" + e);
+             //alert("file error" + e);
+             console.error("file error" + e);
           };
 
 
@@ -404,9 +405,16 @@ if(fcn){
                       console.log('Write completed.');
 
                       if((callback) && ((data instanceof Blob))){
-                        console.log('Data is  a blob. Sound save c callback case.');
+                        console.log('Data is  a blob. Sound save  callback case.');
                          callback();
                       }
+
+                      if((callback) && (!(data instanceof Blob))){
+
+                        console.log('Data is not a blob. Standart callback case.');
+                       callback(name + "." + extension);
+                    }
+
                    }
 
                    fileWriter.onerror = function(e) {
@@ -438,19 +446,21 @@ if(fcn){
           //window.requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem;
           //window.requestFileSystem(window.TEMPORARY, 5*1024*1024 /*5MB*/, onInitFs, errorHandler);
 
-          navigator.webkitPersistentStorage.requestQuota(2 *1024*1024*1024, //2Гб
-             function(grantedBytes){
-                console.log("byte granted=" + grantedBytes);
-                window.webkitRequestFileSystem(PERSISTENT, grantedBytes, onInitFs, errorHandler);
-             }, errorHandler
-          );
+         //  navigator.webkitPersistentStorage.requestQuota(2 *1024*1024*1024, //2Гб
+         //     function(grantedBytes){
+         //        console.log("byte granted=" + grantedBytes);
+         //        window.webkitRequestFileSystem(PERSISTENT, grantedBytes, onInitFs, errorHandler);
+         //     }, errorHandler
+         //  );
+
+         tabletInterface.requestQuota(onInitFs, errorHandler);
 
 
-          if((callback) && (!(data instanceof Blob))){
+         //  if((callback) && (!(data instanceof Blob))){
 
-              console.log('Data is not a blob. Standart callback case.');
-             callback(name + "." + extension);
-          }
+         //      console.log('Data is not a blob. Standart callback case.');
+         //     callback(name + "." + extension);
+         //  }
        }
 
        tabletInterface.requestQuota = function(initFsCb,errorHandler){
@@ -535,12 +545,17 @@ if(fcn){
     }
 
 
-    navigator.webkitPersistentStorage.requestQuota(2 *1024*1024*1024, //2Гб
-       function(grantedBytes){
-    //      console.log("byte granted=" + grantedBytes);
-          window.webkitRequestFileSystem(PERSISTENT, grantedBytes, _onInitFs, errorHandler);
-       }, errorHandler);
-       }
+   //  navigator.webkitPersistentStorage.requestQuota(2 *1024*1024*1024, //2Гб
+   //     function(grantedBytes){
+   //  //      console.log("byte granted=" + grantedBytes);
+   //        window.webkitRequestFileSystem(PERSISTENT, grantedBytes, _onInitFs, errorHandler);
+   //     }, errorHandler);
+
+        tabletInterface.requestQuota(_onInitFs, errorHandler);
+
+        }
+
+  
 
 
 
@@ -617,13 +632,18 @@ if(fcn){
              }, errorHandler);
           };
 
-          navigator.webkitPersistentStorage.requestQuota(2 *1024*1024*1024, //2Гб
-             function(grantedBytes){
-                console.log("byte granted=" + grantedBytes);
-                window.webkitRequestFileSystem(PERSISTENT, grantedBytes, onInitFs, errorHandler);
-             }, errorHandler
-          );
+         //  navigator.webkitPersistentStorage.requestQuota(2 *1024*1024*1024, //2Гб
+         //     function(grantedBytes){
+         //        console.log("byte granted=" + grantedBytes);
+         //        window.webkitRequestFileSystem(PERSISTENT, grantedBytes, onInitFs, errorHandler);
+         //     }, errorHandler
+         //  );
+
+         tabletInterface.requestQuota(onInitFs, errorHandler);
+
        }
+
+
        tabletInterface.io_loadFileAPIBinaryURL = function(sFile, callback){
           console.log("io_loadFileAPI =" + sFile);
 
@@ -702,12 +722,14 @@ if(fcn){
              }, errorHandler);
           };
 
-          navigator.webkitPersistentStorage.requestQuota(2 *1024*1024*1024, //2Гб
-             function(grantedBytes){
-                console.log("byte granted=" + grantedBytes);
-                window.webkitRequestFileSystem(PERSISTENT, grantedBytes, onInitFs, errorHandler);
-             }, errorHandler
-          );
+         //  navigator.webkitPersistentStorage.requestQuota(2 *1024*1024*1024, //2Гб
+         //     function(grantedBytes){
+         //        console.log("byte granted=" + grantedBytes);
+         //        window.webkitRequestFileSystem(PERSISTENT, grantedBytes, onInitFs, errorHandler);
+         //     }, errorHandler
+         //  );
+
+         tabletInterface.requestQuota(onInitFs, errorHandler);
        }
 
 
