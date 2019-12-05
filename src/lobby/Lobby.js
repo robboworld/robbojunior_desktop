@@ -418,7 +418,7 @@ export default class Lobby {
         var div = newHTML('div', 'htmlcontents settings', p);
         div.setAttribute('id', 'htmlcontents');
 
-        var arrow_image = newImage_extended(div,'assets/lobby/navigation-arrow.svg',{},'arrow-image'); //modified_by_Yaroslav
+        var arrow_image = newImage_extended(div,'assets/lobby/navigation-arrow.svg',{},'arrow-image'); //added_by_Yaroslav //custom images loading
 
          arrow_image.ontouchstart = Lobby.createSpriteBgLoadPage;
 
