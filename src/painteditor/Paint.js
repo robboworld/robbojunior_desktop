@@ -569,6 +569,9 @@ export default class Paint {
             gn('maincanvas').style.webkitTransform = 'translate(' + gn('maincanvas').dx + 'px,'
                 + gn('maincanvas').dy + 'px) scale(' + value + ',' + value + ')';
 
+           /* gn('maincanvas').style.webkitTransform = 'translate(' + gn('maincanvas').dx + 'px,'
+                + gn('maincanvas').dy + 'px) scale(' + 1 + ',' + 1 + ')';*/
+
         }
     }
 

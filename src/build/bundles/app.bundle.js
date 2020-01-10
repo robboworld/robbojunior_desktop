@@ -8578,11 +8578,11 @@
 	            var div = (0, _lib.newHTML)('div', 'htmlcontents settings', p);
 	            div.setAttribute('id', 'htmlcontents');
 	
-	            //var arrow_image = newImage_extended(div,'assets/lobby/navigation-arrow.svg',{},'arrow-image'); //added_by_Yaroslav //custom images loading
+	            var arrow_image = (0, _lib.newImage_extended)(div, 'assets/lobby/navigation-arrow.svg', {}, 'arrow-image'); //added_by_Yaroslav //custom images loading
 	
-	            //arrow_image.ontouchstart = Lobby.createSpriteBgLoadPage;
+	            arrow_image.ontouchstart = Lobby.createSpriteBgLoadPage;
 	
-	            // arrow_image.onmousedown = arrow_image.ontouchstart;
+	            arrow_image.onmousedown = arrow_image.ontouchstart;
 	
 	            // Localization settings
 	            var title = (0, _lib.newHTML)('h1', 'localizationtitle', div);
@@ -12133,6 +12133,9 @@
 	            } else {
 	                // Use 2D translate to maintain sharpness
 	                (0, _lib.gn)('maincanvas').style.webkitTransform = 'translate(' + (0, _lib.gn)('maincanvas').dx + 'px,' + (0, _lib.gn)('maincanvas').dy + 'px) scale(' + value + ',' + value + ')';
+	
+	                /* gn('maincanvas').style.webkitTransform = 'translate(' + gn('maincanvas').dx + 'px,'
+	                     + gn('maincanvas').dy + 'px) scale(' + 1 + ',' + 1 + ')';*/
 	            }
 	        }
 	    }, {
