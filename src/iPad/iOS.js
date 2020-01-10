@@ -471,15 +471,12 @@ if(fcn){
             }
 
             let usageCallback = function(bytesInUse,grantedBytes){
-
-
-          navigator.webkitPersistentStorage.requestQuota(grantedBytes, 
-             function(grantedBytes){
-                console.log("byte granted=" + grantedBytes);
-                window.webkitRequestFileSystem(PERSISTENT, grantedBytes, initFsCb, errorHandler);
-             }, errorHandler
-           );
-
+               navigator.webkitPersistentStorage.requestQuota(grantedBytes, 
+                  function(grantedBytes){
+                     console.log("byte granted=" + grantedBytes);
+                     window.webkitRequestFileSystem(PERSISTENT, grantedBytes, initFsCb, errorHandler);
+                  }, errorHandler
+               );
             }
 
         
