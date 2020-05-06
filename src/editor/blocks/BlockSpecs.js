@@ -121,6 +121,7 @@ export default class BlockSpecs {
     static getImageFrom (url, ext) {
         var img = document.createElement('img');
         img.src = url + (ext ? '.' + ext : '.png');
+        console.log("In editor/blocks/BlockSpecs.js in getImageFrom img.src = " + img.src);
         if (!img.complete) {
             loadassets[img.src] = img;
             loadCount++;

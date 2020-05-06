@@ -1007,6 +1007,7 @@ export default class Paint {
 
     static addImageUrl (p, url) {
         var img = document.createElement('img');
+        console.log("In painteditor/Paint.js in addImageUrl url=" + url);
         img.src = url;
         img.style.position = 'absolute';
         p.appendChild(img);
