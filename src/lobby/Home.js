@@ -137,30 +137,30 @@ export default class Home {
         }
         var md5 = Home.actionTarget.id;
         switch (Home.getAction(e)) {
-        case 'project':
-            ScratchAudio.sndFX('keydown.wav');
-            if (md5 && (md5 == 'newproject')) {
-                Home.createNewProject();
-            } else if (md5) {
-                iOS.setfile('homescroll.sjr', gn('wrapc').scrollTop, function () {
-                    doNext(md5);
-                });
-            }
-            break;
-        case 'delete':
-            ScratchAudio.sndFX('cut.wav');
-            Project.thumbnailUnique(Home.actionTarget.thumb, Home.actionTarget.id, function (isUnique) {
-                if (isUnique) {
-                    iOS.remove(Home.actionTarget.thumb, iOS.trace);
+            case 'project':
+                ScratchAudio.sndFX('keydown.wav');
+                if (md5 && (md5 == 'newproject')) {
+                    Home.createNewProject();
+                } else if (md5) {
+                    iOS.setfile('homescroll.sjr', gn('wrapc').scrollTop, function () {
+                        doNext(md5);
+                    });
                 }
-            });
-            iOS.setfield(iOS.database, Home.actionTarget.id, 'deleted', 'YES', Home.removeProjThumb);
-            break;
-        default:
-            if (Home.actionTarget && (Home.actionTarget.childElementCount > 2)) {
-                Home.actionTarget.childNodes[Home.actionTarget.childElementCount - 1].style.visibility = 'hidden';
-            }
-            break;
+                break;
+            case 'delete':
+                ScratchAudio.sndFX('cut.wav');
+                Project.thumbnailUnique(Home.actionTarget.thumb, Home.actionTarget.id, function (isUnique) {
+                    if (isUnique) {
+                        iOS.remove(Home.actionTarget.thumb, iOS.trace);
+                    }
+                });
+                iOS.setfield(iOS.database, Home.actionTarget.id, 'deleted', 'YES', Home.removeProjThumb);
+                break;
+            default:
+                if (Home.actionTarget && (Home.actionTarget.childElementCount > 2)) {
+                    Home.actionTarget.childNodes[Home.actionTarget.childElementCount - 1].style.visibility = 'hidden';
+                }
+                break;
         }
         function doNext () {
             iOS.analyticsEvent('lobby', 'existing_project_edited');
@@ -272,16 +272,22 @@ export default class Home {
         var data = IO.parseProjectData(aa);
         var id = data.id;
         var th = data.thumbnail;
+        console.log("In addProjectLink th="+th);
         if (!th) {
             return;
         }
         var thumb = (typeof th === 'string') ? JSON.parse(th) : th;
+        console.log("In addProjectLink thumb="+JSON.stringify(thumb));
+
         var pc = thumb.pagecount ? thumb.pagecount : 1;
         var tb = newHTML('div', 'projectthumb', parent);
         tb.setAttribute('id', id);
         tb.type = 'projectthumb';
         tb.thumb = thumb.md5;
+        console.log("In addProjectLink tb="+tb.toString());
+        
         var mt = newHTML('div', 'aproject p' + pc, tb);
+        console.log("In addProjectLink mt="+mt.toString());
         Home.insertThumbnail(mt, 192, 144, thumb);
         var label = newHTML('div', 'projecttitle', tb);
         var txt = newHTML('h4', undefined, label);
@@ -308,7 +314,11 @@ export default class Home {
             IO.getAsset(md5, drawMe);
         }
         function drawMe (url) {
-            img.src = url;
+            console.log("In Home.js in static insertThumbnail in function drawMe url = " + url);
+            //img.src = url;
+            iOS.loadFileAPIBinaryURL(url.slice(url.lastIndexOf("/")+1), (result) => {
+                img.src = result;
+            });
         }
     }
 }

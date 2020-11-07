@@ -150,6 +150,7 @@ export default class SVGImage {
         var newctx = newcnv.getContext('2d');
         var dataurl = image.getAttribute('xlink:href');
         var img = document.createElement('img');
+        console.log("In painteditor/SVGImage.js in draw dataurl = " + dataurl);
         img.src = dataurl;
         if (!img.complete) {
             img.onload = function () {

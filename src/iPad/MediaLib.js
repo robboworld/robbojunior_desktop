@@ -69,55 +69,28 @@ export default class MediaLib {
         var query_custom_bkgs = function(cb){
 
           IO.query('custombkgs', json, (results) => {
+                results = JSON.parse(results);
 
-                  results = JSON.parse(results);
-
-                    if (results.length != 0) {
-
-                  //  let obj =  Object.assign(sprites, results);
-
-                  let length = backgrounds.length;
-
+                if (results.length != 0) {
+                    //  let obj =  Object.assign(sprites, results);
+                    let length = backgrounds.length;
                     for (let i = 0; i < results.length; i++) {
-
                         backgrounds[length + i] = results[i];
 
                         backgrounds[length + i].md5 = backgrounds[length + i].md5 + "_custom" + "." + backgrounds[length + i].ext;
                         backgrounds[length + i].altmd5 = backgrounds[length + i].altmd5 + "_custom" + "." + backgrounds[length + i].ext;
 
-
                         console.log(`adding custom background ${backgrounds[length + i].md5}`);
-
                     }
-
-
-
-
-
-
-                    //  cb();
-
-                      MediaLib.localizeMediaNames();
-                      MediaLib.generateKeys();
-
-                      whenDone();
-
-                    }else{
-
-                  //    cb();
-
-                      MediaLib.localizeMediaNames();
-                      MediaLib.generateKeys();
-
-                      whenDone();
-
-
-                    }
-
+                    MediaLib.localizeMediaNames();
+                    MediaLib.generateKeys();
+                    whenDone();
+                } else {
+                    MediaLib.localizeMediaNames();
+                    MediaLib.generateKeys();
+                    whenDone();
+                }
             });
-
-
-
         }
 
 

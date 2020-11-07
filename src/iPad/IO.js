@@ -95,13 +95,9 @@ export default class IO {
         if ((IO.getExtension(md5) == 'png') && iOS.path) {
             fcn(iOS.path + md5); // only if it is not in debug mode
         } else {
-
-          if (md5.indexOf('_custom') != -1)
-          {
-
-            md5 = md5.replace("_custom","");
-
-          }
+            if (md5.indexOf('_custom') != -1) {
+                md5 = md5.replace("_custom","");
+            }
             iOS.getmedia(md5, nextStep);
         } // get url contents
 
@@ -153,6 +149,7 @@ export default class IO {
             for (var i = 0; i < images.length; i++) {
                 var dataurl = images[i].getAttribute('xlink:href');
                 var svgimg = document.createElement('img');
+                console.log("In iPad/IO.js in getImagesInSVG i = " + i + "; and dataurl = " + dataurl);
                 svgimg.src = dataurl;
                 if (!svgimg.complete) {
                     svgimg.onload = function () {
