@@ -313,58 +313,56 @@ export default class Library {
 
     static addUploadedThumbChoose (parent, data, w, h, fcn) {
 
-      var tb = newHTML('div', 'assetbox off', parent);
-      var md5 = data.md5;
-      tb.byme = nativeJr ? 1 : 0;
-      tb.setAttribute('id', md5);
-      tb.scale = (!data.scale) ? 0.5 : data.scale; // 0.5 : data.scale
-      tb.fieldname = data.name;
-      tb.w = Number(data.width);
-      tb.h = Number(data.height);
-      tb.need_flip = data.need_flip;
+        var tb = newHTML('div', 'assetbox off', parent);
+        var md5 = data.md5;
+        tb.byme = nativeJr ? 1 : 0;
+        tb.setAttribute('id', md5);
+        tb.scale = (!data.scale) ? 0.5 : data.scale; // 0.5 : data.scale
+        tb.fieldname = data.name;
+        tb.w = Number(data.width);
+        tb.h = Number(data.height);
+        tb.need_flip = data.need_flip;
 
-      var img = newHTML('img', undefined, tb);
-      var scale = Math.min(w / tb.w, h / tb.h);
-      img.style.height = tb.h * scale + 'px';
-      img.style.width = tb.w * scale + 'px';
+        var img = newHTML('img', undefined, tb);
+        var scale = Math.min(w / tb.w, h / tb.h);
+        img.style.height = tb.h * scale + 'px';
+        img.style.width = tb.w * scale + 'px';
 
-      img.style.left = Math.floor(((w - (scale * tb.w)) / 2) + (9 * scaleMultiplier)) + 'px';
-      img.style.top = Math.floor(((h - (scale * tb.h)) / 2) + (9 * scaleMultiplier)) + 'px';
-      img.style.position = 'relative';
+        img.style.left = Math.floor(((w - (scale * tb.w)) / 2) + (9 * scaleMultiplier)) + 'px';
+        img.style.top = Math.floor(((h - (scale * tb.h)) / 2) + (9 * scaleMultiplier)) + 'px';
+        img.style.position = 'relative';
 
-      // Cached downsized-thumbnails are in pnglibrary
-      var pngPath = MediaLib.path.replace('svg', 'png');
-//AZ
-//        img.src = pngPath + IO.getFilename(md5) + '.png';
+        // Cached downsized-thumbnails are in pnglibrary
+        var pngPath = MediaLib.path.replace('svg', 'png');
+    //AZ
+    //        img.src = pngPath + IO.getFilename(md5) + '.png';
 
-      // img.src = "svglibrary/" + IO.getFilename(md5) + '.svg';
+        // img.src = "svglibrary/" + IO.getFilename(md5) + '.svg';
 
-      if (data.md5.indexOf("_custom") != -1) {
-
-          IO.getAsset(data.altmd5, drawMe);   //modified_by_Yaroslav
-
-      }else{
-
-        img.src = "svglibrary/" + IO.getFilename(md5) + '.svg';
-      }
-
-
-      function drawMe (dataurl) {
-          img.src = dataurl;
-      }
+        if (data.md5.indexOf("_custom") != -1) {
+            console.log("In editor/Library.js in addUploadedThumbChoose data.altmd5=" + data.altmd5);
+            IO.getAsset(data.altmd5, drawMe);   //modified_by_Yaroslav
+        }else{
+            img.src = "svglibrary/" + IO.getFilename(md5) + '.svg';
+            console.log("In editor/Library.js in addUploadedThumbChoose img.src = " + img.src);
+        }
 
 
-      if (isTablet){
-      tb.ontouchstart = function (evt) {
-          fcn(evt, tb);
-      };
-    }else{
+        function drawMe (dataurl) {
+            console.log("In Library.js in drawMe dataurl=" + dataurl);
+            img.src = dataurl;
+        }
 
-      tb.onmousedown = function (evt) {
-          fcn(evt, tb);
-      };
 
-    }
+        if (isTablet){
+            tb.ontouchstart = function (evt) {
+                fcn(evt, tb);
+            };
+        }else{
+            tb.onmousedown = function (evt) {
+                fcn(evt, tb);
+            };
+        }
       return tb;
 
     }
@@ -767,7 +765,11 @@ export default class Library {
             IO.getAsset(data.altmd5, drawMe);
         }
         function drawMe (dataurl) {
-            img.src = dataurl;
+            console.log("In Library.js in addAssetThumbChoose in drawMe dataurl = " + dataurl);
+            //img.src = dataurl;
+            iOS.loadFileAPIBinaryURL(dataurl.slice(dataurl.lastIndexOf("/")+1), (result) => {
+                img.src = result;
+            });
         }
         if (isTablet){
         tb.ontouchstart = function (evt) {
@@ -866,6 +868,7 @@ export default class Library {
 
 
         function drawMe (dataurl) {
+            console.log("In Library.js in addUploadedThumbChoose in drawMe dataurl = " + dataurl);
             img.src = dataurl;
         }
 

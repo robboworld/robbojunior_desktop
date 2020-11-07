@@ -420,7 +420,7 @@ export default class Lobby {
 
         var arrow_image = newImage_extended(div,'assets/lobby/navigation-arrow.svg',{},'arrow-image'); //added_by_Yaroslav //custom images loading
 
-         arrow_image.ontouchstart = Lobby.createSpriteBgLoadPage;
+        arrow_image.ontouchstart = Lobby.createSpriteBgLoadPage;
 
         arrow_image.onmousedown = arrow_image.ontouchstart;
 
@@ -448,6 +448,10 @@ export default class Lobby {
             };
             languageButton.onmousedown = languageButton.ontouchstart;
         }
+
+        var storagePath = newHTML('div', 'storage-path', p);
+        var sp = iOS.getStoragePath;
+        storagePath.textContent = Localization.localize('StoragePath: ') + sp;
     }
 
     static setSubMenu (page) {

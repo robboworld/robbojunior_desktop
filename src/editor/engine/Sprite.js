@@ -120,6 +120,7 @@ export default class Sprite {
 
     setCostume (dataurl, fcn) {
         var img = document.createElement('img');
+        console.log("In editor/engine/Sprite.js in setCostume dataurl = " + dataurl);
         img.src = dataurl;
         this.img = img;
         // Make a copy that is not affected by zoom transformation
@@ -735,6 +736,7 @@ export default class Sprite {
         var b = a[1].split('h-1');
         str = a[0] + 'h' + (-side1 + 7 + curve) + b[0] + 'h' + (-side2 + 7 + curve) + b[1];
         img.src = 'data:image/svg+xml;base64,' + btoa(str);
+        console.log("In editor/engine/Sprite.js in drawBalloon img.src.length = " + img.src.length);
     }
 
     /////////////////////////////////////
@@ -1050,6 +1052,7 @@ export default class Sprite {
         var str = (new XMLSerializer()).serializeToString(svg);
         str = str.replace(/ href="data:image/g, ' xlink:href="data:image');
         img.src = 'data:image/svg+xml;base64,' + btoa(str);
+        console.log("In editor/engine/Sprite.js in getSVGimage img.src.length = " + img.src.length);
         return img;
     }
 

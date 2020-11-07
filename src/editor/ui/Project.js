@@ -444,6 +444,7 @@ export default class Project {
         var th = metadata.thumbnail;
         if (th && ScratchJr.editmode != 'storyStarter') { // Don't try to delete the thumbnail in a sample project
             var thumb = (typeof th === 'string') ? JSON.parse(th) : th;
+            console.log(typeof(thumb) + "; " + console.log(typeof(thumb.md5)))
             if (thumb.md5.indexOf('samples/') < 0) { // In case we've exited story-starter mode
                 Project.thumbnailUnique(thumb.md5, id, function (isUnique) {
                     if (isUnique) {

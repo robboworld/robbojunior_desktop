@@ -176,6 +176,7 @@ export default class Page {
 
     setBackgroundImage (url, fcn) {
         var img = document.createElement('img');
+        console.log("In editor/engine/Page.js in setBackgroundImage url = " + url);
         img.src = url;
         this.bkg.originalImg = img.cloneNode(false);
         this.bkg.appendChild(img);
@@ -308,6 +309,7 @@ export default class Page {
             return;
         }
         var img = (spr.type == 'sprite') ? spr.originalImg : spr.outline;
+        console.log("spr.originalImg = " + spr.originalImg + "; " + "spr.outline = " + spr.outline)
         this.drawSpriteImage(ctx, img, spr, scale);
     }
 
