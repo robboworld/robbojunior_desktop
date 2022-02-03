@@ -9,7 +9,8 @@ export function homeMain () {
     iOS.getsettings(doNext);
     function doNext (str) {
         var list = str.split(',');
-        iOS.path = list[1] == '0' ? list[0] + '/' : undefined;
+        // iOS.path = list[1] == '0' ? list[0] + '/' : undefined;
+        iOS.path = list[1] == '0' ? list[0] + '/' :  '';
         Lobby.appinit(window.Settings.scratchJrVersion);
     }
 }
