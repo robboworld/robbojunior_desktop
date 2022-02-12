@@ -135,7 +135,7 @@ export default class Page {
             return;
         }
 
-        if (md5.indexOf('/') > -1) {
+        if (md5.indexOf('/') > -1  && (md5.indexOf(iOS.storagePath) < 0)) {
             IO.requestFromServer(md5, doNext);
         } else {
 
@@ -154,7 +154,7 @@ export default class Page {
         function doNext (str) {
             str = str.replace(/>\s*</g, '><');
             me.setSVG(str);
-            if ((str.indexOf('xlink:href') < 0) && iOS.path) {
+            if ((str.indexOf('xlink:href') < 0) && iOS.path !== iOS.storagePath) {
                 me.setBackgroundImage(url, fcn); // does not have embedded images
             } else {
                 var base64 = IO.getImageDataURL(me.md5, btoa(str));
@@ -177,7 +177,11 @@ export default class Page {
     setBackgroundImage (url, fcn) {
         var img = document.createElement('img');
         console.log("In editor/engine/Page.js in setBackgroundImage url = " + url);
-        img.src = url;
+        if (url.indexOf('data:image/svg+xml;base64,') < 0) {
+            img.src = 'data:image/svg+xml;base64,' + url;
+        } else {
+            img.src = url
+        }
         this.bkg.originalImg = img.cloneNode(false);
         this.bkg.appendChild(img);
         setProps(img.style, {

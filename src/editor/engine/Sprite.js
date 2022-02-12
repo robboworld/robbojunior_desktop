@@ -81,14 +81,13 @@ export default class Sprite {
         var spr = this;
         var url = ((MediaLib.keys[md5]) && (md5.indexOf('_custom') < 0) ) ? MediaLib.path + md5 : (md5.indexOf('/') < 0) ? iOS.path + md5 : md5;  //modified_by_Yaroslav
         md5 = ((MediaLib.keys[md5]) && (md5.indexOf('_custom') < 0)) ? MediaLib.path + md5 : md5;
-        if (md5.indexOf('/') > -1) {
+        if ((md5.indexOf('/') > -1) && (md5.indexOf(iOS.storagePath) < 0)) {
             IO.requestFromServer(md5, doNext);
         } else {
-            if (md5.indexOf('_custom') != -1)
-            {
+            if (md5.indexOf('_custom') != -1) {
 
-              md5 = md5.replace("_custom","");
-          
+                md5 = md5.replace("_custom", "");
+
             }
             iOS.getmedia(md5, nextStep);
         }
@@ -98,7 +97,7 @@ export default class Sprite {
         function doNext (str) {
             str = str.replace(/>\s*</g, '><');
             spr.setSVG(str);
-            if ((str.indexOf('xlink:href') < 0) && iOS.path) {
+            if ((str.indexOf('xlink:href') < 0) && iOS.path !== iOS.storagePath) {
                 whenDone(url); // does not have embedded images
             } else {
                 var base64 = IO.getImageDataURL(spr.md5, btoa(str));
@@ -121,7 +120,11 @@ export default class Sprite {
     setCostume (dataurl, fcn) {
         var img = document.createElement('img');
         console.log("In editor/engine/Sprite.js in setCostume dataurl = " + dataurl);
-        img.src = dataurl;
+        if (dataurl.indexOf('data:image/svg+xml;base64,') < 0) {
+            img.src = 'data:image/svg+xml;base64,' + dataurl;
+        } else {
+            img.src = dataurl
+        }
         this.img = img;
         // Make a copy that is not affected by zoom transformation
         this.originalImg = img.cloneNode(false);

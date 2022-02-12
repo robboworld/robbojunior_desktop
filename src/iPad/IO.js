@@ -92,8 +92,9 @@ export default class IO {
             IO.requestFromServer(md5, gotit); // get url contents
             return;
         }
-        if ((IO.getExtension(md5) == 'png') && iOS.path) {
-            fcn(iOS.path + md5); // only if it is not in debug mode
+        if ((IO.getExtension(md5) == 'png') && iOS.path !== iOS.storagePath) {
+            // fcn(iOS.path + md5); // only if it is not in debug mode
+            fcn(md5);
         } else {
             if (md5.indexOf('_custom') != -1) {
                 md5 = md5.replace("_custom","");
@@ -114,8 +115,9 @@ export default class IO {
 
         function nextStep (dataurl) { // iOS 7 requires to read the internal base64 images before returning contents
             var str = atob(dataurl);
-            if ((str.indexOf('xlink:href') < 0) && iOS.path) {
-                fcn(iOS.path + md5); // does not have embedded images
+            if ((str.indexOf('xlink:href') < 0) && iOS.path !== iOS.storagePath) {
+                //fcn(iOS.path + md5); // does not have embedded images
+                fcn(md5);
             } else {
                 var base64 = IO.getImageDataURL(md5, dataurl);
                 IO.getImagesInSVG(str, function () {

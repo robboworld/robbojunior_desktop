@@ -32,6 +32,10 @@ export default class iOS {
 
    // Getters/setters for properties used in other classes
    static get path () {
+      return path;
+   }
+
+   static get storagePath () {
       return storagePath;
    }
 
@@ -600,7 +604,7 @@ export default class iOS {
          // }
 
          tabletInterface.io_loadFileAPI = function(sFile, callback){
-            sFile = storagePath + sFile;
+            // sFile = storagePath + sFile;
             console.log("io_loadFileAPINew sFile=" + sFile);
 
             node_fs.readFile(sFile, (err, data) => {
