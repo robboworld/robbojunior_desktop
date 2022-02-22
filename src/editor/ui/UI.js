@@ -416,9 +416,9 @@ export default class UI {
       var contents = e.target.result;
 
 
-      if (contents.indexOf("data:application/zip;base64,") != -1){
+      if (contents.indexOf("data:application/octet-stream;base64,") != -1){
 
-          contents = e.target.result.replace("data:application/zip;base64,", "");
+          contents = e.target.result.replace("data:application/octet-stream;base64,", "");
 
           var receivedZip = JSZip();
 
@@ -609,7 +609,7 @@ if (isAndroid){
   static SjrRead_Android(data){
 
 
-    var contents = data.replace("data:;base64,", "");
+    var contents = data.replace("data:application/octet-stream;base64,", "");
     iOS.loadProjectFromSjr(contents);
 
   }
@@ -622,7 +622,7 @@ if (isAndroid){
      }
      var reader = new FileReader();
      reader.onload = function(e){
-        var contents = e.target.result.replace("data:;base64,", "");
+        var contents = e.target.result.replace("data:application/octet-stream;base64,", "");
         iOS.loadProjectFromSjr(contents);
      };
      reader.readAsDataURL(file);
@@ -800,7 +800,7 @@ if (isAndroid){
            }
            var reader = new FileReader();
            reader.onload = function(e){
-              var contents = e.target.result.replace("data:;base64,", "");
+              var contents = e.target.result.replace("data:application/octet-stream;base64,", "");
               iOS.loadProjectFromSjr(contents);
            };
            reader.readAsDataURL(file);
