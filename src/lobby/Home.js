@@ -310,6 +310,10 @@ export default class Home {
     static insertThumbnail (p, w, h, data) {
         var md5 = data.md5;
         var img = newHTML('img', undefined, p);
+        // insert storagePath to md5 for load sjr project
+        if(!md5.match(iOS.storagePath)){
+            md5 = iOS.storagePath + md5;
+        }
         if (md5) {
             IO.getAsset(md5, drawMe);
         }
