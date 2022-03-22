@@ -373,12 +373,12 @@ export default class Lobby {
         gn('wrapc').className = 'contentwrap scroll';
         var div = newHTML('div', 'htmlcontents home', p);
         div.setAttribute('id', 'htmlcontents');
-
+ 
         // var arrow_image = newImage_extended(div,'assets/lobby/navigation-arrow.svg',{},'arrow-image'); //modified_by_Yaroslav
         //
         //  arrow_image.ontouchstart = Lobby.createSpriteBgLoadPage;
         //
-        // arrow_image.onmousedown = arrow_image.ontouchstart;
+        // arrow_image.onmousedown = arrow_image.ontouchstart; 
 
 
         Home.init();
@@ -418,11 +418,11 @@ export default class Lobby {
         var div = newHTML('div', 'htmlcontents settings', p);
         div.setAttribute('id', 'htmlcontents');
 
-        var arrow_image = newImage_extended(div,'assets/lobby/navigation-arrow.svg',{},'arrow-image'); //added_by_Yaroslav //custom images loading
+       /* var arrow_image = newImage_extended(div,'assets/lobby/navigation-arrow.svg',{},'arrow-image'); //added_by_Yaroslav //custom images loading
 
         arrow_image.ontouchstart = Lobby.createSpriteBgLoadPage;
 
-        arrow_image.onmousedown = arrow_image.ontouchstart;
+        arrow_image.onmousedown = arrow_image.ontouchstart; */
 
         // Localization settings
         var title = newHTML('h1', 'localizationtitle', div);

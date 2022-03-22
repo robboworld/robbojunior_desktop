@@ -21,12 +21,16 @@ let database = 'projects';
 let mediacounter = 0;
 let tabletInterface = null;
 
-const homedir = node_os.homedir();
-const storagePath = homedir + (process.platform==="win32"?"/AppData/Local/RobboJuniorProjects":"/.config/RobboJuniorProjects/");
+var  homedir = node_os.homedir();
+homedir = homedir.replace(/\\/g,'/');
+var path_postfix = (node_process.platform==="win32"?"/AppData/Local/RobboJuniorProjects/":"/.config/RobboJuniorProjects/");
+const storagePath = homedir + (node_process.platform==="win32"?"/AppData/Local/RobboJuniorProjects/":"/.config/RobboJuniorProjects/");
 
 
 
 console.log("homedir = " + homedir);
+console.log("path_postfix = " + path_postfix);
+console.log("node_process.platform = " + node_process.platform);
 
 export default class iOS {
 
@@ -620,19 +624,25 @@ export default class iOS {
          tabletInterface.io_loadFileAPIBinaryURL = function(sFile, callback){
             console.log("io_loadFileAPIBinaryURL =" + sFile);
 
-            let dataType = {}
+            var  dataType = {};
 
-            console.log("EXT IS " + sFile.slice(sFile.length - 3));
+            var ext = sFile.slice(sFile.length - 3);
 
-            if(sFile.slice(sFile.length - 3) === "png"){
+            console.log("EXT IS " + ext);
+            //console.log(typeof ext);
+
+            if(ext === "png"){
                dataType.type = "image";
                dataType.ext = "png";
-            } else if(sFile.slice(sFile.length - 3) === "svg"){
+            } else if (ext  === "svg"){
                dataType.type = "image";
-               dataType.ext = "svg";
-            } else if(sFile.slice(sFile.length - 3) === "wav"){
+               dataType.ext = "svg+xml";
+            } else if( ext === "wav"){
                dataType.type = "video";
                dataType.ext = "webm";
+            } else{
+               dataType.type = "unknown";
+               dataType.ext = "unknown";
             }
 
             sFile = storagePath + sFile;
@@ -642,13 +652,32 @@ export default class iOS {
                if(err) console.error(err);
                else{
                   console.log("iOS:io_loadFileAPIBina...:Trying to read file " + sFile);
-                  var resp = "data:"+dataType.type+"/"+dataType.ext+";base64,"+data;
+                  var resp = `data:${dataType.type}/${dataType.ext};base64,${data}`;
 
                   if(data.constructor.name == "Buffer"){
-                     console.log("loadFileAPIBinaryURL data is Buffer, type is " + data.type + " and size is " + data.size);
+                     console.log(`loadFileAPIBinaryURL data is Buffer, type is  ${data.type} and size is  ${data.size}`);
                      // console.log(data.toString());
+
+                     if (dataType.ext === "svg"){
+
+                        try {
+
+                           data = btoa(data);
+       
+                           console.warn(`data  for md5: ${sFile}`);
+                           console.warn(data);
+   
+                           resp = `data:${dataType.type}/${dataType.ext};base64,${data}`;
+                           
+                       } catch (error) {
+                           console.error("iOS:io_loadFileAPIBina base64 decode error: " + error);
+                       }
+
+                     }
+
+                    
                   }
-                  // console.log("loadFileAPIBinaryURL.resp = " + resp);
+                  console.warn("loadFileAPIBinaryURL.resp = " + resp);
                   callback(resp);
                }
             });

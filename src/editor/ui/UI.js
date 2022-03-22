@@ -378,6 +378,7 @@ export default class UI {
         // TODO: check asset not exist
 
 
+       file_name = iOS.storagePath + file_name; 
 
         var table = (asset_type == "sprite")?"customsprites":"custombkgs";
 
@@ -623,6 +624,11 @@ if (isAndroid){
      var reader = new FileReader();
      reader.onload = function(e){
         var contents = e.target.result.replace("data:application/octet-stream;base64,", "");
+
+        if (node_process.platform === "win32"){
+            contents = e.target.result.replace("data:;base64,", "");
+        }
+
         iOS.loadProjectFromSjr(contents);
      };
      reader.readAsDataURL(file);
@@ -793,7 +799,7 @@ if (isAndroid){
 
 
 
-        function readFile(e){
+      /*  function readFile(e){
            var file = e.target.files[0];
            if (!file) {
               return;
@@ -804,7 +810,7 @@ if (isAndroid){
               iOS.loadProjectFromSjr(contents);
            };
            reader.readAsDataURL(file);
-        }
+        } */
 
 
 

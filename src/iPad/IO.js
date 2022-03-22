@@ -88,7 +88,7 @@ export default class IO {
         if ((MediaLib.keys[md5]) && (md5.indexOf('_custom') < 0)) {  //modified_by_Yaroslav
             fcn(MediaLib.path + md5); return;
         } // just url link assets do not have photos
-        if (md5.indexOf('/') > -1) {
+        if ((md5.indexOf('/') > -1) && (md5.indexOf('_custom') < 0)) {
             IO.requestFromServer(md5, gotit); // get url contents
             return;
         }
@@ -115,10 +115,22 @@ export default class IO {
 
         function nextStep (dataurl) { // iOS 7 requires to read the internal base64 images before returning contents
             var str = atob(dataurl);
-            if ((str.indexOf('xlink:href') < 0) && iOS.path !== iOS.storagePath) {
+            if ((str.indexOf('xlink:href') < 0) /*&& (md5.indexOf(iOS.storagePath) < 0)*/ && (iOS.path !== iOS.storagePath)) {
                 //fcn(iOS.path + md5); // does not have embedded images
                 fcn(md5);
             } else {
+
+                try {
+
+                    //dataurl = btoa(dataurl);
+
+                    console.warn(`data url for md5: ${md5}`);
+                    console.warn(dataurl);
+                    
+                } catch (error) {
+                    console.error("nextStep base64 decode error: " + error);
+                }
+
                 var base64 = IO.getImageDataURL(md5, dataurl);
                 IO.getImagesInSVG(str, function () {
                     fcn(base64);
@@ -573,6 +585,9 @@ export default class IO {
             'base64': true
         });
 
+        //receivedZip.loadAsync(b64data,/*{'base64': true }*/).then(zip =>{
+
+
         // To store character MD5 -> character name map
         // The character name is stored in the project JSON; when we load
         // the actual SVG asset, we need the associated name for storage in the DB
@@ -724,6 +739,18 @@ export default class IO {
 
             // File data and base64-encoded data
             var data = file.asBinary();
+
+             try {
+
+                data = atob(data);
+                console.warn("Succesfull decode");
+                
+            } catch (error) {
+
+                console.error("Decode error:" + error);
+                
+            } 
+
             var b2data = btoa(data);
 
             if (subFolder == 'thumbnails' || subFolder == 'sounds') {
@@ -847,5 +874,10 @@ export default class IO {
             }
         }
         refreshLobby();
+
+    //   }).catch(err => {
+
+    //         console.error(err);
+    //   });
     }
 }

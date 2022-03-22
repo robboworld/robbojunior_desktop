@@ -349,8 +349,12 @@ export default class Library {
 
 
         function drawMe (dataurl) {
-            console.log("In Library.js in drawMe dataurl=" + dataurl);
-            img.src = dataurl;
+            console.log("In Library.js in addUploadedThumbChoose / drawMe dataurl=" + dataurl);
+            //img.src = dataurl;
+
+            iOS.loadFileAPIBinaryURL(dataurl.slice(dataurl.lastIndexOf("/")+1), (result) => {
+                img.src = result;
+            });
         }
 
 
@@ -766,7 +770,7 @@ export default class Library {
         }
         function drawMe (dataurl) {
             console.log("In Library.js in addAssetThumbChoose in drawMe dataurl = " + dataurl);
-            //img.src = dataurl;
+           // img.src = dataurl;
             iOS.loadFileAPIBinaryURL(dataurl.slice(dataurl.lastIndexOf("/")+1), (result) => {
                 img.src = result;
             });
@@ -868,7 +872,7 @@ export default class Library {
 
 
         function drawMe (dataurl) {
-            console.log("In Library.js in addUploadedThumbChoose in drawMe dataurl = " + dataurl);
+            console.log("In Library.js in  addLocalThumbChoose /  in drawMe dataurl = " + dataurl);
             img.src = dataurl;
         }
 

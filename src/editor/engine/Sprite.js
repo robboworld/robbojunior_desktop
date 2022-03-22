@@ -97,7 +97,7 @@ export default class Sprite {
         function doNext (str) {
             str = str.replace(/>\s*</g, '><');
             spr.setSVG(str);
-            if ((str.indexOf('xlink:href') < 0) && iOS.path !== iOS.storagePath) {
+            if ( (str.indexOf('xlink:href') < 0) &&  (url.indexOf(iOS.storagePath) < 0) /*&& iOS.path !== iOS.storagePath*/ ) {
                 whenDone(url); // does not have embedded images
             } else {
                 var base64 = IO.getImageDataURL(spr.md5, btoa(str));
@@ -120,11 +120,12 @@ export default class Sprite {
     setCostume (dataurl, fcn) {
         var img = document.createElement('img');
         console.log("In editor/engine/Sprite.js in setCostume dataurl = " + dataurl);
-        if (dataurl.indexOf('data:image/svg+xml;base64,') < 0) {
+        if ( (dataurl.indexOf('data:image/svg+xml;base64,') < 0) && ( dataurl.indexOf('svglibrary') < 0) ) {
             img.src = 'data:image/svg+xml;base64,' + dataurl;
         } else {
             img.src = dataurl
         }
+        //img.src = dataurl;
         this.img = img;
         // Make a copy that is not affected by zoom transformation
         this.originalImg = img.cloneNode(false);
