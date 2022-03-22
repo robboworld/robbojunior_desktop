@@ -404,6 +404,21 @@ export default class IO {
             zipFile = new JSZip();
             zipFile.folder('project');
 
+            // Removing the path is necessary to find files when loading
+            // the archive on another computer or OC
+            var removingStoragePathFromMd5 = function(jsonData) {
+                for (let key of Object.keys(jsonData)) {
+                    if(typeof jsonData[key] === "object"){
+                        removingStoragePathFromMd5(jsonData[key]);
+                    }else{
+                        if(key === "md5"){
+                            jsonData[key] = jsonData[key].replace(iOS.storagePath, "")
+                        }
+                    }
+                }
+            }
+            removingStoragePathFromMd5(jsonData);
+
             var projectDataForZip = JSON.stringify(jsonData);
             zipFile.file('project/data.json', projectDataForZip, {});
 
@@ -413,7 +428,11 @@ export default class IO {
             // Generic function for adding media to the zip file
             var addMediaToZip = function (folder, md5) {
                 var addB64ToZip = function (b64data) {
-                    zipFile.file('project/' + folder + '/' + md5, b64data, {
+                    // folder structure fix
+                    let md5Array = md5.split('/');
+                    let md5WithoutPath = md5Array[md5Array.length - 1];
+
+                    zipFile.file('project/' + folder + '/' + md5WithoutPath, b64data, {
                         base64: true,
                         createFolders: true
                     });
@@ -602,6 +621,21 @@ export default class IO {
 
                 // Build map of character filename -> character name
                 var projectData = jsonData.json;
+
+                // return storagePath in md5
+                var insertStoragePathToMd5 = function(jsonData) {
+                    for (let key of Object.keys(jsonData)) {
+                        if(typeof jsonData[key] === "object"){
+                            insertStoragePathToMd5(jsonData[key]);
+                        }else{
+                            if(key === "md5" && jsonData[key].length > 35){
+                                jsonData[key] = iOS.storagePath + jsonData[key];
+                            }
+                        }
+                    }
+                }
+                insertStoragePathToMd5(projectData);
+
                 for (var p = 0; p < projectData.pages.length; p++) {
                     var pageReference = projectData.pages[p];
                     var page = projectData[pageReference];
