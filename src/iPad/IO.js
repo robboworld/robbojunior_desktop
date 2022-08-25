@@ -674,7 +674,10 @@ export default class IO {
                   let  base64toBlob =  function(base64Data, contentType) {
                       contentType = contentType || '';
                       var sliceSize = 1024;
-                      base64Data =  base64Data.replace("data:;base64,","");
+                      base64Data =  base64Data.replace("data:application/octet-stream;base64,","");
+                      if (node_process.platform === "win32"){
+                        base64Data = base64Data.replace("data:;base64,", "");
+                      }
                       var byteCharacters = atob(base64Data);
                       var bytesLength = byteCharacters.length;
                       var slicesCount = Math.ceil(bytesLength / sliceSize);
