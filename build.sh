@@ -51,6 +51,11 @@ echo 'npm run build'
 
 npm run build
 
+sed -i -e '1 s/^/const node_fs = require("fs");\n/;' ./src/build/bundles/app.bundle.js
+sed -i -e '1 s/^/const node_os = require("os");\n/;' ./src/build/bundles/app.bundle.js
+sed -i -e '1 s/^/const node_process = require("process");\n/;' ./src/build/bundles/app.bundle.js
+
+
 echo 'rm app.bundle.js'
 rm app.bundle.js
 
